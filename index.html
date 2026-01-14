@@ -3,6 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Global Visual Lotto Picker (1-45)</title>
+    <meta name="google-adsense-account" content="ca-pub-3385745246239215">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3385745246239215"
+     crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
     <style>
         :root {
             --bg: #f2f2f7; --card-bg: #ffffff; --text: #1c1c1e;
@@ -130,6 +135,13 @@
 </head>
 <body>
 
+    <div style="text-align: center; margin-bottom: 20px;">
+        <h2>동물상 테스트</h2>
+        <button type="button" onclick="init()">Start</button>
+        <div id="webcam-container"></div>
+        <div id="label-container"></div>
+    </div>
+
     <div class="top-bar">
         <button class="util-btn" onclick="toggleDarkMode()" id="modeBtn">🌙 Dark Mode</button>
         <button class="util-btn" onclick="toggleLanguage()" id="langBtn">🇺🇸 English</button>
@@ -177,6 +189,11 @@
         </form>
     </div>
 
+    <div id="disqus_thread"></div>
+
+    
+
+
 <script>
     let picked = [];
     let currentMode = 'number';
@@ -221,7 +238,9 @@
 
     searchInput.addEventListener("keyup", (e) => { if (e.key === "Enter") handleSearch(); });
 
-    window.onload = () => changeTab('number', document.querySelector('.nav-btns button'));
+    window.onload = () => {
+        changeTab('number', document.querySelector('.nav-btns button'));
+    };
 
     function changeTab(mode, btn) {
         currentMode = mode;
@@ -231,6 +250,18 @@
 
         const keywords = { number: '', dream: 'career', actor: 'portrait,actor,famous', flag: 'national,flag', animal: 'animal,wildlife' };
         render(keywords[mode]);
+
+        if (typeof DISQUS !== 'undefined') {
+            DISQUS.reset({
+                reload: true,
+                config: function () {
+                    this.page.url = window.location.href;
+                    this.page.identifier = mode;
+                }
+            });
+        } else {
+            loadDisqus(mode);
+        }
     }
 
     function handleSearch() {
@@ -239,6 +270,15 @@
         currentMode = 'search';
         modeTitle.innerText = isEnglish ? `Click "${val}" photos!` : `"${val}" 사진을 클릭하세요!`;
         render(val);
+        if (typeof DISQUS !== 'undefined') {
+            DISQUS.reset({
+                reload: true,
+                config: function () {
+                    this.page.url = window.location.href;
+                    this.page.identifier = 'search-' + val;
+                }
+            });
+        }
     }
 
     function render(keyword) {
@@ -289,6 +329,71 @@
         picked = [];
         ballDiv.innerHTML = '';
     }
+
+    function loadDisqus(identifier) {
+        var disqus_config = function () {
+            this.page.url = window.location.href;
+            this.page.identifier = identifier;
+        };
+
+        var d = document, s = d.createElement('script');
+        s.src = 'https://god3rd-visuallotto.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    }
+
+    // More API functions here:
+    // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/image
+
+    // the link to your model provided by Teachable Machine export panel
+    const URL = "https://teachablemachine.withgoogle.com/models/D4JCk5RcS/";
+
+    let model, webcam, labelContainer, maxPredictions;
+
+    // Load the image model and setup the webcam
+    async function init() {
+        const modelURL = URL + "model.json";
+        const metadataURL = URL + "metadata.json";
+
+        // load the model and metadata
+        // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
+        // or files from your local hard drive
+        // Note: the pose library adds "tmImage" object to your window (window.tmImage)
+        model = await tmImage.load(modelURL, metadataURL);
+        maxPredictions = model.getTotalClasses();
+
+        // Convenience function to setup a webcam
+        const flip = true; // whether to flip the webcam
+        webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip
+        await webcam.setup(); // request access to the webcam
+        await webcam.play();
+        window.requestAnimationFrame(loop);
+
+        // append elements to the DOM
+        document.getElementById("webcam-container").appendChild(webcam.canvas);
+        labelContainer = document.getElementById("label-container");
+        for (let i = 0; i < maxPredictions; i++) { // and class labels
+            labelContainer.appendChild(document.createElement("div"));
+        }
+    }
+
+    async function loop() {
+        webcam.update(); // update the webcam frame
+        await predict();
+        window.requestAnimationFrame(loop);
+    }
+
+    // run the webcam image through the image model
+    async function predict() {
+        // predict can take in an image, video or canvas html element
+        const prediction = await model.predict(webcam.canvas);
+        for (let i = 0; i < maxPredictions; i++) {
+            const classPrediction =
+                prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+            labelContainer.childNodes[i].innerHTML = classPrediction;
+        }
+    }
 </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </body>
 </html>
