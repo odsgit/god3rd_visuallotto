@@ -50,6 +50,82 @@
         
         .util-btn { padding: 8px 15px; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; font-size: 13px; background: var(--card-bg); color: var(--text); font-weight: bold; }
         .reset-btn { background: #ff3b30; color: white; border: none; padding: 12px 40px; border-radius: 10px; cursor: pointer; font-weight: bold; }
+
+        
+        /* Contact Form Styles */
+        .contact-form-container {
+            margin-top: 30px;
+            width: 100%;
+            max-width: 600px;
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .contact-form-container h3 {
+            color: var(--text);
+            margin-bottom: 20px;
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-group {
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: var(--text);
+        }
+
+        .contact-form input[type="text"],
+        .contact-form input[type="email"],
+        .contact-form textarea {
+            width: calc(100% - 24px); /* Account for padding */
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            outline: none;
+            background: var(--card-bg); /* Use card-bg for inputs for consistency */
+            color: var(--text);
+            box-sizing: border-box; /* Include padding in element's total width and height */
+            transition: border-color 0.2s;
+        }
+
+        .contact-form input[type="text"]:focus,
+        .contact-form input[type="email"]:focus,
+        .contact-form textarea:focus {
+            border-color: var(--primary);
+        }
+
+        .contact-form textarea {
+            resize: vertical; /* Allow vertical resizing */
+        }
+
+        .submit-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            margin-top: 10px;
+            transition: background-color 0.2s;
+        }
+
+        .submit-btn:hover {
+            background-color: #0056b3; /* Darker shade for hover */
+        }
     </style>
 </head>
 <body>
@@ -80,6 +156,25 @@
         <h3 id="modeTitle">숫자를 직접 선택하세요!</h3>
         <div id="selectedBalls" class="balls"></div>
         <button class="reset-btn" onclick="resetAll()" id="resetBtn">초기화</button>
+    </div>
+
+    <div class="contact-form-container">
+        <h3>제휴 문의</h3>
+        <form action="https://formspree.io/f/xaqqyrbn" method="POST" class="contact-form">
+            <div class="form-group">
+                <label for="name">이름:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">이메일:</label>
+                <input type="email" id="email" name="_replyto" required>
+            </div>
+            <div class="form-group">
+                <label for="message">메시지:</label>
+                <textarea id="message" name="message" rows="5" required></textarea>
+            </div>
+            <button type="submit" class="submit-btn">보내기</button>
+        </form>
     </div>
 
 <script>
