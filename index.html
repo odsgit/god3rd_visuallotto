@@ -1,14 +1,199 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hello World</title>
-  <link href='/style.css' rel='stylesheet'>
+    <meta charset="UTF-8">
+    <title>Global Visual Lotto Picker (1-45)</title>
+    <style>
+        :root {
+            --bg: #f2f2f7; --card-bg: #ffffff; --text: #1c1c1e;
+            --primary: #007aff; --result-panel: #1c1c1e;
+        }
+        body.dark-mode {
+            --bg: #121212; --card-bg: #1e1e1e; --text: #ffffff;
+            --primary: #0a84ff; --result-panel: #2c2c2e;
+        }
+
+        body { font-family: 'Apple SD Gothic Neo', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; transition: 0.3s; display: flex; flex-direction: column; align-items: center; }
+        
+        .top-bar { display: flex; justify-content: space-between; width: 100%; max-width: 900px; margin-bottom: 10px; }
+        .controls { background: var(--card-bg); padding: 25px; border-radius: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.05); width: 100%; max-width: 900px; margin-bottom: 20px; text-align: center; }
+        
+        .nav-btns { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+        .nav-btns button { padding: 10px 18px; border: 1px solid #ddd; border-radius: 10px; background: var(--card-bg); color: var(--text); cursor: pointer; font-weight: 700; transition: 0.2s; }
+        .nav-btns button.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        .search-group { display: flex; justify-content: center; gap: 10px; padding-top: 15px; border-top: 1px solid #eee; }
+        input { padding: 12px; width: 250px; border: 2px solid #eee; border-radius: 10px; outline: none; background: var(--card-bg); color: var(--text); }
+
+        /* 5*9 그리드 설정 */
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(9, 1fr); /* 9열 */
+            grid-template-rows: repeat(5, 1fr);    /* 5행 */
+            gap: 10px; 
+            width: 100%; 
+            max-width: 900px; 
+            background: var(--card-bg); 
+            padding: 20px; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08); 
+        }
+        
+        .item { aspect-ratio: 1/1; border-radius: 10px; overflow: hidden; cursor: pointer; position: relative; border: 3px solid transparent; background: #8882; transition: 0.2s; }
+        .item:hover { transform: scale(1.05); border-color: #ff3b30; z-index: 5; }
+        .item img { width: 100%; height: 100%; object-fit: cover; }
+        .item .num-label { height: 100%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 800; }
+
+        .result-panel { margin-top: 30px; width: 100%; max-width: 600px; text-align: center; padding: 25px; background: var(--result-panel); border-radius: 20px; color: white; }
+        .balls { display: flex; justify-content: center; gap: 12px; margin: 20px 0; min-height: 55px; }
+        .ball { width: 55px; height: 55px; line-height: 55px; border-radius: 50%; background: linear-gradient(135deg, #ffcc00, #ff9500); color: #000; font-weight: bold; font-size: 1.4rem; }
+        
+        .util-btn { padding: 8px 15px; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; font-size: 13px; background: var(--card-bg); color: var(--text); font-weight: bold; }
+        .reset-btn { background: #ff3b30; color: white; border: none; padding: 12px 40px; border-radius: 10px; cursor: pointer; font-weight: bold; }
+    </style>
 </head>
 <body>
-  <h1>Hello, world!</h1>
-  <button onclick="console.log('hello');">Press me</button>
-  <script defer type="text/javascript" src="/main.js"></script>
+
+    <div class="top-bar">
+        <button class="util-btn" onclick="toggleDarkMode()" id="modeBtn">🌙 Dark Mode</button>
+        <button class="util-btn" onclick="toggleLanguage()" id="langBtn">🇺🇸 English</button>
+    </div>
+
+    <div class="controls">
+        <h2 id="mainTitle">🍀 비주얼 로또 픽커 (1-45)</h2>
+        <div class="nav-btns">
+            <button onclick="changeTab('number', this)" class="active" data-ko="숫자" data-en="Number">숫자</button>
+            <button onclick="changeTab('dream', this)" data-ko="꿈 (진로)" data-en="Dream (Career)">꿈 (진로)</button>
+            <button onclick="changeTab('actor', this)" data-ko="영화배우" data-en="Actors">영화배우</button>
+            <button onclick="changeTab('flag', this)" data-ko="나라(국기)" data-en="Flags">나라(국기)</button>
+            <button onclick="changeTab('animal', this)" data-ko="동물" data-en="Animals">동물</button>
+        </div>
+        <div class="search-group">
+            <input type="text" id="customInput" placeholder="검색어 입력 (Enter)">
+            <button onclick="handleSearch()" id="searchBtn" style="background:#34c759; color:white; border:none; border-radius:10px; padding:0 20px; cursor:pointer; font-weight:bold;">검색</button>
+        </div>
+    </div>
+
+    <div id="grid" class="grid"></div>
+
+    <div class="result-panel">
+        <h3 id="modeTitle">숫자를 직접 선택하세요!</h3>
+        <div id="selectedBalls" class="balls"></div>
+        <button class="reset-btn" onclick="resetAll()" id="resetBtn">초기화</button>
+    </div>
+
+<script>
+    let picked = [];
+    let currentMode = 'number';
+    let isEnglish = false;
+    const gridDiv = document.getElementById('grid');
+    const ballDiv = document.getElementById('selectedBalls');
+    const modeTitle = document.getElementById('modeTitle');
+    const searchInput = document.getElementById('customInput');
+
+    // 45개 직업 리스트
+    const jobs = ['doctor','scientist','programmer','astronaut','pilot','chef','artist','teacher','judge','architect','firefighter','police','dentist','musician','athlete','lawyer','nurse','designer','farmer','baker','mechanic','photographer','journalist','diplomat','barista','soldier','professor','reporter','carpenter','diver','florist','magician','painter','tailor','videographer','physicist','geologist','librarian','dancer','model','actor','sailor','coach','writer','dentist'];
+
+    const langData = {
+        ko: { title: "🍀 비주얼 로또 픽커 (1-45)", search: "검색", reset: "초기화", placeholder: "검색어 입력 (Enter)", numMsg: "숫자를 직접 선택하세요!", randMsg: "사진을 클릭하면 랜덤 번호 추출!" },
+        en: { title: "🍀 Visual Lotto Picker (1-45)", search: "Search", reset: "Reset", placeholder: "Enter keyword (Enter)", numMsg: "Click a number to pick!", randMsg: "Click a photo for a random number!" }
+    };
+
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        document.getElementById('modeBtn').innerText = isDark ? "☀️ Light Mode" : "🌙 Dark Mode";
+    }
+
+    function toggleLanguage() {
+        isEnglish = !isEnglish;
+        const lang = isEnglish ? 'en' : 'ko';
+        document.getElementById('langBtn').innerText = isEnglish ? "🇰🇷 한국어" : "🇺🇸 English";
+        document.getElementById('mainTitle').innerText = langData[lang].title;
+        document.getElementById('searchBtn').innerText = langData[lang].search;
+        document.getElementById('resetBtn').innerText = langData[lang].reset;
+        searchInput.placeholder = langData[lang].placeholder;
+        document.querySelectorAll('.nav-btns button').forEach(btn => {
+            btn.innerText = isEnglish ? btn.getAttribute('data-en') : btn.getAttribute('data-ko');
+        });
+        updateModeTitle();
+    }
+
+    function updateModeTitle() {
+        const lang = isEnglish ? 'en' : 'ko';
+        modeTitle.innerText = currentMode === 'number' ? langData[lang].numMsg : langData[lang].randMsg;
+    }
+
+    searchInput.addEventListener("keyup", (e) => { if (e.key === "Enter") handleSearch(); });
+
+    window.onload = () => changeTab('number', document.querySelector('.nav-btns button'));
+
+    function changeTab(mode, btn) {
+        currentMode = mode;
+        document.querySelectorAll('.nav-btns button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        updateModeTitle();
+
+        const keywords = { number: '', dream: 'career', actor: 'portrait,actor,famous', flag: 'national,flag', animal: 'animal,wildlife' };
+        render(keywords[mode]);
+    }
+
+    function handleSearch() {
+        const val = searchInput.value.trim();
+        if(!val) return;
+        currentMode = 'search';
+        modeTitle.innerText = isEnglish ? `Click "${val}" photos!` : `"${val}" 사진을 클릭하세요!`;
+        render(val);
+    }
+
+    function render(keyword) {
+        gridDiv.innerHTML = '';
+        for (let i = 1; i <= 45; i++) { // 45번까지
+            const box = document.createElement('div');
+            box.className = 'item';
+            box.onclick = () => (currentMode === 'number') ? addNum(i) : pickRandom();
+
+            if (currentMode === 'number') {
+                box.innerHTML = `<div class="num-label">${i}</div>`;
+            } else {
+                const img = document.createElement('img');
+                let finalTag = currentMode === 'dream' ? jobs[i-1] : keyword;
+                img.src = `https://images.unsplash.com/photo-1?w=200&h=200&fit=crop&q=80&sig=${i}&${finalTag}`;
+                img.onerror = () => { img.src = `https://loremflickr.com/200/200/${finalTag}?lock=${i}`; };
+                box.appendChild(img);
+            }
+            gridDiv.appendChild(box);
+        }
+    }
+
+    function addNum(n) {
+        if (picked.length >= 6 || picked.includes(n)) return;
+        picked.push(n);
+        updateUI();
+    }
+
+    function pickRandom() {
+        if (picked.length >= 6) return;
+        let r;
+        do { r = Math.floor(Math.random() * 45) + 1; } while (picked.includes(r));
+        picked.push(r);
+        updateUI();
+    }
+
+    function updateUI() {
+        ballDiv.innerHTML = '';
+        picked.forEach(n => {
+            const b = document.createElement('div');
+            b.className = 'ball';
+            b.innerText = n;
+            ballDiv.appendChild(b);
+        });
+    }
+
+    function resetAll() {
+        picked = [];
+        ballDiv.innerHTML = '';
+    }
+</script>
 </body>
 </html>
