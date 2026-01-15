@@ -11,11 +11,11 @@
     <style>
         :root {
             --bg: #f2f2f7; --card-bg: #ffffff; --text: #1c1c1e;
-            --primary: #007aff; --result-panel: #1c1c1e;
+            --primary: #007aff; --result-panel: #1c1c1e; --border-color: #ddd;
         }
         body.dark-mode {
             --bg: #121212; --card-bg: #1e1e1e; --text: #ffffff;
-            --primary: #0a84ff; --result-panel: #2c2c2e;
+            --primary: #0a84ff; --result-panel: #2c2c2e; --border-color: #444;
         }
 
         body { font-family: 'Apple SD Gothic Neo', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; transition: 0.3s; display: flex; flex-direction: column; align-items: center; }
@@ -24,11 +24,11 @@
         .controls { background: var(--card-bg); padding: 25px; border-radius: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.05); width: 100%; max-width: 900px; margin-bottom: 20px; text-align: center; }
         
         .nav-btns { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-        .nav-btns button { padding: 10px 18px; border: 1px solid #ddd; border-radius: 10px; background: var(--card-bg); color: var(--text); cursor: pointer; font-weight: 700; transition: 0.2s; }
+        .nav-btns button { padding: 10px 18px; border: 1px solid var(--border-color); border-radius: 10px; background: var(--card-bg); color: var(--text); cursor: pointer; font-weight: 700; transition: 0.2s; }
         .nav-btns button.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-        .search-group { display: flex; justify-content: center; gap: 10px; padding-top: 15px; border-top: 1px solid #eee; }
-        input { padding: 12px; width: 250px; border: 2px solid #eee; border-radius: 10px; outline: none; background: var(--card-bg); color: var(--text); }
+        .search-group { display: flex; justify-content: center; gap: 10px; padding-top: 15px; border-top: 1px solid var(--border-color); }
+        input { padding: 12px; width: 250px; border: 2px solid var(--border-color); border-radius: 10px; outline: none; background: var(--card-bg); color: var(--text); }
 
         /* 5*9 그리드 설정 */
         .grid { 
@@ -53,7 +53,7 @@
         .balls { display: flex; justify-content: center; gap: 12px; margin: 20px 0; min-height: 55px; }
         .ball { width: 55px; height: 55px; line-height: 55px; border-radius: 50%; background: linear-gradient(135deg, #ffcc00, #ff9500); color: #000; font-weight: bold; font-size: 1.4rem; }
         
-        .util-btn { padding: 8px 15px; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; font-size: 13px; background: var(--card-bg); color: var(--text); font-weight: bold; }
+        .util-btn { padding: 8px 15px; border-radius: 8px; border: 1px solid var(--border-color); cursor: pointer; font-size: 13px; background: var(--card-bg); color: var(--text); font-weight: bold; }
         .reset-btn { background: #ff3b30; color: white; border: none; padding: 12px 40px; border-radius: 10px; cursor: pointer; font-weight: bold; }
 
         
@@ -96,7 +96,7 @@
         .contact-form textarea {
             width: calc(100% - 24px); /* Account for padding */
             padding: 12px;
-            border: 2px solid #eee;
+            border: 2px solid var(--border-color);
             border-radius: 10px;
             outline: none;
             background: var(--card-bg); /* Use card-bg for inputs for consistency */
@@ -130,6 +130,114 @@
 
         .submit-btn:hover {
             background-color: #0056b3; /* Darker shade for hover */
+        }
+
+        .content-section {
+            margin-top: 30px;
+            width: 100%;
+            max-width: 900px;
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+        }
+        .article {
+            margin-bottom: 20px;
+        }
+        .article h3 {
+            color: var(--text);
+        }
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            width: 100%;
+            max-width: 900px;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+        }
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        @media screen and (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .top-bar, .controls, .grid, .result-panel, .contact-form-container, .content-section, footer {
+                max-width: 100%;
+                padding: 15px;
+                border-radius: 10px;
+            }
+
+            .nav-btns {
+                gap: 5px;
+                justify-content: space-around;
+            }
+
+            .nav-btns button {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+                border-radius: 8px;
+            }
+
+            .search-group {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            input {
+                width: calc(100% - 24px); /* Account for padding */
+                padding: 10px;
+                font-size: 1rem;
+            }
+            
+            .search-group button {
+                width: 100%;
+                padding: 10px;
+            }
+
+            .grid {
+                grid-template-columns: repeat(4, 1fr); /* 4열로 변경 */
+                gap: 8px;
+                padding: 15px;
+            }
+
+            .item .num-label {
+                font-size: 18px;
+            }
+
+            .balls {
+                gap: 8px;
+            }
+
+            .ball {
+                width: 45px;
+                height: 45px;
+                line-height: 45px;
+                font-size: 1.2rem;
+            }
+
+            .reset-btn, .submit-btn {
+                padding: 10px 30px;
+                font-size: 0.9rem;
+            }
+
+            h2, h3 {
+                font-size: 1.3rem;
+            }
+
+            .top-bar {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+            .util-btn {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -189,7 +297,34 @@
         </form>
     </div>
 
-    <div id="disqus_thread"></div>
+    </div>
+
+    <div class="content-section">
+        <h2>Lotto Fun Facts & Tips</h2>
+        <div class="article">
+            <h3>The Surprising Math Behind Lotto Numbers</h3>
+            <p>Many people believe that lotto numbers are purely random, but there are some interesting mathematical patterns that can be observed. While these patterns don't guarantee a win, they can make the number selection process more interesting. For example, some studies have shown that odd and even numbers tend to be drawn in a balanced way. This is just one of many fascinating aspects of the mathematics of chance.</p>
+        </div>
+        <div class="article">
+            <h3>Can Your Dreams Really Predict Lotto Numbers?</h3>
+            <p>Throughout history, people have looked for signs and symbols to guide their lottery picks. Dreams are a common source of inspiration. While there is no scientific evidence to support the idea that dreams can predict winning numbers, many players find it a fun and exciting way to choose their numbers. Our "Dream" category is inspired by this long-standing tradition of finding personal meaning in the numbers you choose.</p>
+        </div>
+    </div>
+
+    <div id="about" class="page-section" style="display: none;">
+        <h2>About Us</h2>
+        <p>Visual Lotto Picker is a fun and interactive way to choose your lottery numbers. We believe that choosing your numbers should be an exciting experience. Our website uses a variety of visual themes to help you find your lucky numbers. Whether you're inspired by your dreams, your favorite actor, or the colors of a national flag, our visual picker can help you make a choice that feels right for you. Our goal is to make the lottery more engaging and enjoyable for everyone.</p>
+    </div>
+
+    <div id="privacy" class="page-section" style="display: none;">
+        <h2>Privacy Policy</h2>
+        <p>Your privacy is important to us. It is Visual Lotto Picker's policy to respect your privacy regarding any information we may collect from you across our website. We only ask for personal information when we truly need it to provide a service to you. We collect it by fair and lawful means, with your knowledge and consent. We also let you know why we’re collecting it and how it will be used. We only retain collected information for as long as necessary to provide you with your requested service. What data we store, we’ll protect within commercially acceptable means to prevent loss and theft, as well as unauthorized access, disclosure, copying, use or modification. We don’t share any personally identifying information publicly or with third-parties, except when required to by law. Our website may link to external sites that are not operated by us. Please be aware that we have no control over the content and practices of these sites, and cannot accept responsibility or liability for their respective privacy policies. You are free to refuse our request for your personal information, with the understanding that we may be unable to provide you with some of your desired services. Your continued use of our website will be regarded as acceptance of our practices around privacy and personal information. If you have any questions about how we handle user data and personal information, feel free to contact us.</p>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Visual Lotto Picker. All Rights Reserved.</p>
+        <p><a href="#about">About Us</a> | <a href="#privacy">Privacy Policy</a> | <a href="#contact">Contact</a></p>
+    </footer>
 
     
 
@@ -207,8 +342,36 @@
     const jobs = ['doctor','scientist','programmer','astronaut','pilot','chef','artist','teacher','judge','architect','firefighter','police','dentist','musician','athlete','lawyer','nurse','designer','farmer','baker','mechanic','photographer','journalist','diplomat','barista','soldier','professor','reporter','carpenter','diver','florist','magician','painter','tailor','videographer','physicist','geologist','librarian','dancer','model','actor','sailor','coach','writer','dentist'];
 
     const langData = {
-        ko: { title: "🍀 비주얼 로또 픽커 (1-45)", search: "검색", reset: "초기화", placeholder: "검색어 입력 (Enter)", numMsg: "숫자를 직접 선택하세요!", randMsg: "사진을 클릭하면 랜덤 번호 추출!" },
-        en: { title: "🍀 Visual Lotto Picker (1-45)", search: "Search", reset: "Reset", placeholder: "Enter keyword (Enter)", numMsg: "Click a number to pick!", randMsg: "Click a photo for a random number!" }
+        ko: { 
+            title: "🍀 비주얼 로또 픽커 (1-45)", 
+            search: "검색", 
+            reset: "초기화", 
+            placeholder: "검색어 입력 (Enter)", 
+            numMsg: "숫자를 직접 선택하세요!", 
+            randMsg: "사진을 클릭하면 랜덤 번호 추출!",
+            animalTestTitle: "동물상 테스트",
+            startBtn: "시작",
+            contactTitle: "제휴 문의",
+            nameLabel: "이름:",
+            emailLabel: "이메일:",
+            messageLabel: "메시지:",
+            submitBtn: "보내기"
+        },
+        en: { 
+            title: "🍀 Visual Lotto Picker (1-45)", 
+            search: "Search", 
+            reset: "Reset", 
+            placeholder: "Enter keyword (Enter)", 
+            numMsg: "Click a number to pick!", 
+            randMsg: "Click a photo for a random number!",
+            animalTestTitle: "Animal Face Test",
+            startBtn: "Start",
+            contactTitle: "Contact Us",
+            nameLabel: "Name:",
+            emailLabel: "Email:",
+            messageLabel: "Message:",
+            submitBtn: "Submit"
+        }
     };
 
     function toggleDarkMode() {
@@ -220,11 +383,22 @@
     function toggleLanguage() {
         isEnglish = !isEnglish;
         const lang = isEnglish ? 'en' : 'ko';
+        const langObj = langData[lang];
+
         document.getElementById('langBtn').innerText = isEnglish ? "🇰🇷 한국어" : "🇺🇸 English";
-        document.getElementById('mainTitle').innerText = langData[lang].title;
-        document.getElementById('searchBtn').innerText = langData[lang].search;
-        document.getElementById('resetBtn').innerText = langData[lang].reset;
-        searchInput.placeholder = langData[lang].placeholder;
+        document.getElementById('mainTitle').innerText = langObj.title;
+        document.getElementById('searchBtn').innerText = langObj.search;
+        document.getElementById('resetBtn').innerText = langObj.reset;
+        searchInput.placeholder = langObj.placeholder;
+        
+        document.querySelector('h2').innerText = langObj.animalTestTitle;
+        document.querySelector('button[onclick="init()"]').innerText = langObj.startBtn;
+        document.querySelector('.contact-form-container h3').innerText = langObj.contactTitle;
+        document.querySelector('label[for="name"]').innerText = langObj.nameLabel;
+        document.querySelector('label[for="email"]').innerText = langObj.emailLabel;
+        document.querySelector('label[for="message"]').innerText = langObj.messageLabel;
+        document.querySelector('.submit-btn').innerText = langObj.submitBtn;
+
         document.querySelectorAll('.nav-btns button').forEach(btn => {
             btn.innerText = isEnglish ? btn.getAttribute('data-en') : btn.getAttribute('data-ko');
         });
@@ -250,18 +424,6 @@
 
         const keywords = { number: '', dream: 'career', actor: 'portrait,actor,famous', flag: 'national,flag', animal: 'animal,wildlife' };
         render(keywords[mode]);
-
-        if (typeof DISQUS !== 'undefined') {
-            DISQUS.reset({
-                reload: true,
-                config: function () {
-                    this.page.url = window.location.href;
-                    this.page.identifier = mode;
-                }
-            });
-        } else {
-            loadDisqus(mode);
-        }
     }
 
     function handleSearch() {
@@ -270,15 +432,6 @@
         currentMode = 'search';
         modeTitle.innerText = isEnglish ? `Click "${val}" photos!` : `"${val}" 사진을 클릭하세요!`;
         render(val);
-        if (typeof DISQUS !== 'undefined') {
-            DISQUS.reset({
-                reload: true,
-                config: function () {
-                    this.page.url = window.location.href;
-                    this.page.identifier = 'search-' + val;
-                }
-            });
-        }
     }
 
     function render(keyword) {
@@ -330,18 +483,6 @@
         ballDiv.innerHTML = '';
     }
 
-    function loadDisqus(identifier) {
-        var disqus_config = function () {
-            this.page.url = window.location.href;
-            this.page.identifier = identifier;
-        };
-
-        var d = document, s = d.createElement('script');
-        s.src = 'https://god3rd-visuallotto.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    }
-
     // More API functions here:
     // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/image
 
@@ -352,28 +493,30 @@
 
     // Load the image model and setup the webcam
     async function init() {
-        const modelURL = URL + "model.json";
-        const metadataURL = URL + "metadata.json";
+        try {
+            const modelURL = URL + "model.json";
+            const metadataURL = URL + "metadata.json";
 
-        // load the model and metadata
-        // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
-        // or files from your local hard drive
-        // Note: the pose library adds "tmImage" object to your window (window.tmImage)
-        model = await tmImage.load(modelURL, metadataURL);
-        maxPredictions = model.getTotalClasses();
+            // load the model and metadata
+            model = await tmImage.load(modelURL, metadataURL);
+            maxPredictions = model.getTotalClasses();
 
-        // Convenience function to setup a webcam
-        const flip = true; // whether to flip the webcam
-        webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip
-        await webcam.setup(); // request access to the webcam
-        await webcam.play();
-        window.requestAnimationFrame(loop);
+            // Convenience function to setup a webcam
+            const flip = true; // whether to flip the webcam
+            webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip
+            await webcam.setup(); // request access to the webcam
+            await webcam.play();
+            window.requestAnimationFrame(loop);
 
-        // append elements to the DOM
-        document.getElementById("webcam-container").appendChild(webcam.canvas);
-        labelContainer = document.getElementById("label-container");
-        for (let i = 0; i < maxPredictions; i++) { // and class labels
-            labelContainer.appendChild(document.createElement("div"));
+            // append elements to the DOM
+            document.getElementById("webcam-container").appendChild(webcam.canvas);
+            labelContainer = document.getElementById("label-container");
+            for (let i = 0; i < maxPredictions; i++) { // and class labels
+                labelContainer.appendChild(document.createElement("div"));
+            }
+        } catch (error) {
+            alert("동물상 테스트를 시작하는 데 문제가 발생했습니다. 웹캠 접근을 허용하거나, 최신 브라우저를 사용 중인지 확인해주세요. 오류: " + error.message);
+            console.error("Error initializing animal face test:", error);
         }
     }
 
@@ -394,6 +537,5 @@
         }
     }
 </script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </body>
 </html>
