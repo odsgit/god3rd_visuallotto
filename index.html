@@ -21,6 +21,11 @@
         body { font-family: 'Apple SD Gothic Neo', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; transition: 0.3s; display: flex; flex-direction: column; align-items: center; }
         
         .top-bar { display: flex; justify-content: space-between; width: 100%; max-width: 900px; margin-bottom: 10px; }
+        
+        .main-nav-btns { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; background: var(--card-bg); padding: 15px; border-radius: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.05); width: 100%; max-width: 900px; }
+        .main-nav-btns button { padding: 10px 18px; border: 1px solid var(--border-color); border-radius: 10px; background: var(--card-bg); color: var(--text); cursor: pointer; font-weight: 700; transition: 0.2s; }
+        .main-nav-btns button.active { background: var(--primary); color: white; border-color: var(--primary); }
+
         .controls { background: var(--card-bg); padding: 25px; border-radius: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.05); width: 100%; max-width: 900px; margin-bottom: 20px; text-align: center; }
         
         .nav-btns { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
@@ -140,9 +145,16 @@
             padding: 25px;
             border-radius: 20px;
             box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+            text-align: center; /* Center content within these sections */
+        }
+        .content-section p {
+            text-align: left; /* Ensure paragraphs are left-aligned */
+            margin-bottom: 1em;
+            line-height: 1.6;
         }
         .article {
             margin-bottom: 20px;
+            text-align: left;
         }
         .article h3 {
             color: var(--text);
@@ -162,17 +174,48 @@
             text-decoration: none;
         }
 
+        /* Tab Content Styles */
+        .tab-content {
+            display: none; /* Hidden by default */
+            width: 100%;
+            max-width: 900px; /* Align with other main containers */
+            margin-top: 20px; /* Space between nav and content */
+        }
+
+        .tab-content.active {
+            display: block; /* Show active tab */
+        }
+
+        .description {
+            margin-bottom: 20px;
+            line-height: 1.6;
+            color: var(--text);
+            text-align: center;
+        }
+
+
         @media screen and (max-width: 768px) {
             body {
                 padding: 10px;
             }
 
-            .top-bar, .controls, .grid, .result-panel, .contact-form-container, .content-section, footer {
+            .top-bar, .controls, .grid, .result-panel, .contact-form-container, .content-section, footer, .main-nav-btns {
                 max-width: 100%;
                 padding: 15px;
                 border-radius: 10px;
             }
 
+            .main-nav-btns {
+                gap: 5px;
+                justify-content: space-around;
+            }
+
+            .main-nav-btns button {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+                border-radius: 8px;
+            }
+            
             .nav-btns {
                 gap: 5px;
                 justify-content: space-around;
@@ -243,92 +286,143 @@
 </head>
 <body>
 
-    <div style="text-align: center; margin-bottom: 20px;">
-        <h2>동물상 테스트</h2>
-        <button type="button" onclick="init()">Start</button>
-        <div id="webcam-container"></div>
-        <div id="label-container"></div>
-    </div>
-
     <div class="top-bar">
         <button class="util-btn" onclick="toggleDarkMode()" id="modeBtn">🌙 Dark Mode</button>
         <button class="util-btn" onclick="toggleLanguage()" id="langBtn">🇺🇸 English</button>
     </div>
 
-    <div class="controls">
-        <h2 id="mainTitle">🍀 비주얼 로또 픽커 (1-45)</h2>
-        <div class="nav-btns">
-            <button onclick="changeTab('number', this)" class="active" data-ko="숫자" data-en="Number">숫자</button>
-            <button onclick="changeTab('dream', this)" data-ko="꿈 (진로)" data-en="Dream (Career)">꿈 (진로)</button>
-            <button onclick="changeTab('actor', this)" data-ko="영화배우" data-en="Actors">영화배우</button>
-            <button onclick="changeTab('flag', this)" data-ko="나라(국기)" data-en="Flags">나라(국기)</button>
-            <button onclick="changeTab('animal', this)" data-ko="동물" data-en="Animals">동물</button>
-        </div>
-        <div class="search-group">
-            <input type="text" id="customInput" placeholder="검색어 입력 (Enter)">
-            <button onclick="handleSearch()" id="searchBtn" style="background:#34c759; color:white; border:none; border-radius:10px; padding:0 20px; cursor:pointer; font-weight:bold;">검색</button>
-        </div>
+    <div class="main-nav-btns">
+        <button class="tab-button active" onclick="showSection('lotto-picker-section', this)" data-ko="로또 선택기" data-en="Lotto Picker">로또 선택기</button>
+        <button class="tab-button" onclick="showSection('animal-face-test-section', this)" data-ko="동물상 테스트" data-en="Animal Face Test">동물상 테스트</button>
+        <button class="tab-button" onclick="showSection('contact-section', this)" data-ko="문의하기" data-en="Contact Us">문의하기</button>
+        <button class="tab-button" onclick="showSection('lotto-facts-tips-section', this)" data-ko="로또 정보" data-en="Lotto Info">로또 정보</button>
+        <button class="tab-button" onclick="showSection('about-us-section', this)" data-ko="회사소개" data-en="About Us">회사소개</button>
+        <button class="tab-button" onclick="showSection('privacy-policy-section', this)" data-ko="개인정보 처리방침" data-en="Privacy Policy">개인정보 처리방침</button>
     </div>
 
-    <div id="grid" class="grid"></div>
-
-    <div class="result-panel">
-        <h3 id="modeTitle">숫자를 직접 선택하세요!</h3>
-        <div id="selectedBalls" class="balls"></div>
-        <button class="reset-btn" onclick="resetAll()" id="resetBtn">초기화</button>
-    </div>
-
-    <div class="contact-form-container">
-        <h3>제휴 문의</h3>
-        <form action="https://formspree.io/f/xaqqyrbn" method="POST" class="contact-form">
-            <div class="form-group">
-                <label for="name">이름:</label>
-                <input type="text" id="name" name="name" required>
+    <div id="main-content-wrapper">
+        <!-- Lotto Picker Section -->
+        <section id="lotto-picker-section" class="tab-content active">
+            <div class="controls">
+                <h2 id="mainTitle">🍀 비주얼 로또 픽커 (1-45)</h2>
+                <p class="description" data-ko="사진을 통해 나만의 행운의 로또 번호를 선택하세요! 숫자를 직접 선택하거나, 다양한 테마의 이미지를 클릭하여 무작위 번호를 뽑을 수 있습니다. 또한, 특정 키워드를 검색하여 관련 이미지로 번호를 선택하는 색다른 경험을 할 수 있습니다. 매주 업데이트되는 다양한 이미지 테마와 함께 당신의 행운을 시험해보세요!" data-en="Choose your lucky lottery numbers through images! You can either pick numbers directly or click on images of various themes to get random numbers. You can also search for specific keywords to select numbers with related images, offering a unique experience. Try your luck with various image themes updated weekly!"></p>
+                <div class="nav-btns">
+                    <button onclick="changeTab('number', this)" class="active" data-ko="숫자" data-en="Number">숫자</button>
+                    <button onclick="changeTab('dream', this)" data-ko="꿈 (직업)" data-en="Dream (Career)">꿈 (직업)</button>
+                    <button onclick="changeTab('actor', this)" data-ko="영화배우" data-en="Actors">영화배우</button>
+                    <button onclick="changeTab('flag', this)" data-ko="나라(국기)" data-en="Flags">나라(국기)</button>
+                    <button onclick="changeTab('animal', this)" data-ko="동물" data-en="Animals">동물</button>
+                </div>
+                <div class="search-group">
+                    <input type="text" id="customInput" placeholder="검색어 입력 (Enter)">
+                    <button onclick="handleSearch()" id="searchBtn" style="background:#34c759; color:white; border:none; border-radius:10px; padding:0 20px; cursor:pointer; font-weight:bold;">검색</button>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="email">이메일:</label>
-                <input type="email" id="email" name="_replyto" required>
+
+            <div id="grid" class="grid"></div>
+
+            <div class="result-panel">
+                <h3 id="modeTitle">숫자를 직접 선택하세요!</h3>
+                <div id="selectedBalls" class="balls"></div>
+                <button class="reset-btn" onclick="resetAll()" id="resetBtn">초기화</button>
             </div>
-            <div class="form-group">
-                <label for="message">메시지:</label>
-                <textarea id="message" name="message" rows="5" required></textarea>
+        </section>
+
+        <!-- Animal Face Test Section -->
+        <section id="animal-face-test-section" class="tab-content">
+            <div class="content-section">
+                <h2 id="animalTestTitle">동물상 테스트</h2>
+                <p class="description" data-ko="웹캠을 사용하여 내 얼굴이 어떤 동물상에 가까운지 테스트해보세요! 인공지능이 여러분의 얼굴 특징을 분석하여 강아지상, 고양이상, 토끼상 등 다양한 동물상 중 가장 닮은 유형을 찾아드립니다. '시작' 버튼을 누르고 카메라를 응시하면 흥미로운 결과를 바로 확인할 수 있습니다. 친구들과 함께 누가 더 재미있는 동물상이 나오는지 비교해보세요!" data-en="Use your webcam to test which animal face you resemble! Our AI analyzes your facial features to find the closest match among various animal types like dog, cat, or rabbit faces. Press 'Start' and look into the camera to get immediate interesting results. Compare with your friends to see who gets a more amusing animal face!"></p>
+                <button type="button" onclick="init()" id="startBtn">Start</button>
+                <div id="webcam-container"></div>
+                <div id="label-container"></div>
             </div>
-            <button type="submit" class="submit-btn">보내기</button>
-        </form>
-    </div>
+        </section>
 
-    </div>
+        <!-- Contact Form Section -->
+        <section id="contact-section" class="tab-content">
+            <div class="contact-form-container">
+                <h3 id="contactTitle">제휴 문의</h3>
+                <p class="description" data-ko="비주얼 로또 픽커에 대한 제휴 문의, 서비스 개선 제안, 기술 협력 등 다양한 의견을 기다립니다. 아래 양식을 작성하여 보내주시면 담당자가 신속하게 검토 후 연락드리겠습니다. 여러분의 소중한 의견은 더 나은 서비스를 만드는 데 큰 도움이 됩니다." data-en="We welcome partnership inquiries, service improvement suggestions, technical collaboration, and various other feedback regarding Visual Lotto Picker. Please fill out the form below, and our team will promptly review it and get back to you. Your valuable feedback greatly helps us create a better service."></p>
+                <form action="https://formspree.io/f/xaqqyrbn" method="POST" class="contact-form">
+                    <div class="form-group">
+                        <label for="name" id="nameLabel">이름:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" id="emailLabel">이메일:</label>
+                        <input type="email" id="email" name="_replyto" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message" id="messageLabel">메시지:</label>
+                        <textarea id="message" name="message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn" id="submitBtn">보내기</button>
+                </form>
+            </div>
+        </section>
 
-    <div class="content-section">
-        <h2>Lotto Fun Facts & Tips</h2>
-        <div class="article">
-            <h3>The Surprising Math Behind Lotto Numbers</h3>
-            <p>Many people believe that lotto numbers are purely random, but there are some interesting mathematical patterns that can be observed. While these patterns don't guarantee a win, they can make the number selection process more interesting. For example, some studies have shown that odd and even numbers tend to be drawn in a balanced way. This is just one of many fascinating aspects of the mathematics of chance.</p>
-        </div>
-        <div class="article">
-            <h3>Can Your Dreams Really Predict Lotto Numbers?</h3>
-            <p>Throughout history, people have looked for signs and symbols to guide their lottery picks. Dreams are a common source of inspiration. While there is no scientific evidence to support the idea that dreams can predict winning numbers, many players find it a fun and exciting way to choose their numbers. Our "Dream" category is inspired by this long-standing tradition of finding personal meaning in the numbers you choose.</p>
-        </div>
-    </div>
+        <!-- Lotto Fun Facts & Tips Section -->
+        <section id="lotto-facts-tips-section" class="content-section tab-content">
+            <h2>Lotto Fun Facts & Tips</h2>
+            <p class="description" data-ko="로또는 단순한 운 이상의 재미있는 이야기와 통계가 숨어 있습니다. 이곳에서 로또의 흥미로운 사실들과 당첨 확률을 높일 수 있는 몇 가지 팁을 알아보세요. 하지만 로또는 언제나 오락으로 즐겨야 한다는 것을 잊지 마세요!" data-en="Lotto holds interesting stories and statistics beyond simple luck. Discover fascinating facts about lotto here and a few tips that might increase your chances of winning. But always remember that lotto should be enjoyed as entertainment!"></p>
 
-    <div id="about" class="page-section" style="display: none;">
-        <h2>About Us</h2>
-        <p>Visual Lotto Picker is a fun and interactive way to choose your lottery numbers. We believe that choosing your numbers should be an exciting experience. Our website uses a variety of visual themes to help you find your lucky numbers. Whether you're inspired by your dreams, your favorite actor, or the colors of a national flag, our visual picker can help you make a choice that feels right for you. Our goal is to make the lottery more engaging and enjoyable for everyone.</p>
-    </div>
+            <div class="article">
+                <h3>The Surprising Math Behind Lotto Numbers</h3>
+                <p>Many people believe that lotto numbers are purely random, but there are some interesting mathematical patterns that can be observed. While these patterns don't guarantee a win, they can make the number selection process more interesting. For example, some studies have shown that odd and even numbers tend to be drawn in a balanced way. This is just one of many fascinating aspects of the mathematics of chance. Understanding these subtle tendencies can add another layer of enjoyment to your lottery experience, even if it doesn't shift the odds significantly in your favor.</p>
+            </div>
+            <div class="article">
+                <h3>Can Your Dreams Really Predict Lotto Numbers?</h3>
+                <p>Throughout history, people have looked for signs and symbols to guide their lottery picks. Dreams are a common source of inspiration. While there is no scientific evidence to support the idea that dreams can predict winning numbers, many players find it a fun and exciting way to choose their numbers. Our "Dream" category is inspired by this long-standing tradition of finding personal meaning in the numbers you choose. It's all about adding a personal touch and a bit of mystique to your lottery selection process.</p>
+            </div>
+            <div class="article">
+                <h3>Tips for Choosing Your Lotto Numbers</h3>
+                <p>While lotto is primarily a game of chance, some players employ various strategies to pick their numbers. Common approaches include using significant dates (birthdays, anniversaries), choosing numbers that haven't appeared in a long time (though past results don't influence future draws), or even picking numbers in a specific pattern on the lottery slip. Some also suggest avoiding commonly picked numbers to potentially increase the payout if you do win. Ultimately, the best tip is to pick numbers that make you feel lucky and enjoy the game responsibly!</p>
+            </div>
+        </section>
 
-    <div id="privacy" class="page-section" style="display: none;">
-        <h2>Privacy Policy</h2>
-        <p>Your privacy is important to us. It is Visual Lotto Picker's policy to respect your privacy regarding any information we may collect from you across our website. We only ask for personal information when we truly need it to provide a service to you. We collect it by fair and lawful means, with your knowledge and consent. We also let you know why we’re collecting it and how it will be used. We only retain collected information for as long as necessary to provide you with your requested service. What data we store, we’ll protect within commercially acceptable means to prevent loss and theft, as well as unauthorized access, disclosure, copying, use or modification. We don’t share any personally identifying information publicly or with third-parties, except when required to by law. Our website may link to external sites that are not operated by us. Please be aware that we have no control over the content and practices of these sites, and cannot accept responsibility or liability for their respective privacy policies. You are free to refuse our request for your personal information, with the understanding that we may be unable to provide you with some of your desired services. Your continued use of our website will be regarded as acceptance of our practices around privacy and personal information. If you have any questions about how we handle user data and personal information, feel free to contact us.</p>
+        <!-- About Us Section -->
+        <section id="about-us-section" class="content-section tab-content">
+            <h2>About Us</h2>
+            <p class="description" data-ko="비주얼 로또 픽커는 로또 번호 선택을 더욱 재미있고 특별한 경험으로 만들고자 합니다. 저희는 단순한 숫자 선택을 넘어, 다양한 시각적 테마와 인공지능 기술을 활용하여 사용자에게 영감을 주는 번호 선택 방식을 제공합니다. 꿈, 영화배우, 동물 등 여러분의 관심사를 로또 번호와 연결해보세요. 로또가 단순한 게임을 넘어 즐거운 상상과 기대의 시간이 될 수 있도록 돕는 것이 저희의 목표입니다. 행운을 빌며, 책임감 있는 게임을 장려합니다!" data-en="Visual Lotto Picker aims to make lottery number selection a more fun and unique experience. Beyond simple number picking, we provide inspiring ways to choose numbers by utilizing diverse visual themes and AI technology. Connect your interests—dreams, movie stars, animals—to your lotto numbers. Our goal is to help lotto become more than just a game, transforming it into a time of enjoyable imagination and anticipation. We wish you good luck and encourage responsible gaming!"></p>
+            <div class="article">
+                <h3>Our Mission</h3>
+                <p>Our mission is to innovate the way people interact with lotteries. By integrating visual elements and interactive tools, we hope to transform the mundane task of number selection into an engaging and personalized experience. We believe that technology can enhance everyday activities, and lotto picking is no exception. We are committed to providing a platform that is both entertaining and easy to use, while always promoting responsible gaming habits.</p>
+            </div>
+            <div class="article">
+                <h3>Our Vision for the Future</h3>
+                <p>We envision a future where lotto players feel more connected to their number choices, driven by personal meaning and visual inspiration. We plan to continuously expand our visual themes, integrate more advanced AI features for personalized recommendations, and build a community where users can share their experiences and lucky picks. Our long-term goal is to be the leading platform for engaging and responsible lottery participation worldwide.</p>
+            </div>
+        </section>
+
+        <!-- Privacy Policy Section -->
+        <section id="privacy-policy-section" class="content-section tab-content">
+            <h2>Privacy Policy</h2>
+            <p class="description" data-ko="비주얼 로또 픽커는 사용자의 개인정보 보호를 최우선으로 생각합니다. 저희 웹사이트에서 수집되는 모든 정보는 사용자 동의 하에 투명하게 처리되며, 서비스 제공 및 개선 목적으로만 사용됩니다. 개인정보 처리 방침을 자세히 읽어보시고 궁금한 점이 있으시면 언제든지 문의해주세요." data-en="Visual Lotto Picker prioritizes user privacy. All information collected on our website is handled transparently with user consent and used solely for service provision and improvement purposes. Please read our privacy policy in detail and feel free to contact us with any questions."></p>
+            <div class="article">
+                <h3>Information Collection and Use</h3>
+                <p>We collect certain information when you visit our website, primarily to improve your user experience and for analytical purposes. This may include non-personally identifiable information such as your IP address, browser type, operating system, and pages viewed. We use this data to understand how our users interact with our site, diagnose technical issues, and optimize our content and features. Any personally identifiable information, such as what you might provide through our contact form, is collected only with your explicit consent and used only for the purpose for which it was provided.</p>
+            </div>
+            <div class="article">
+                <h3>Data Security and Retention</h3>
+                <p>We implement a variety of security measures to maintain the safety of your personal information when you enter, submit, or access your personal information. These measures include data encryption, secure servers, and access controls. We retain collected information for as long as necessary to provide you with your requested service or to comply with legal obligations. Once no longer needed, we securely delete or anonymize your data. We do not sell, trade, or otherwise transfer your personally identifiable information to outside parties.</p>
+            </div>
+            <div class="article">
+                <h3>Third-Party Links</h3>
+                <p>Our website may contain links to third-party websites that are not operated by us. Please be aware that we have no control over the content and practices of these sites, and cannot accept responsibility or liability for their respective privacy policies. We encourage you to review the privacy policies of any third-party sites you visit. Our inclusion of such links does not imply endorsement of the content or services offered on those sites.</p>
+            </div>
+            <div class="article">
+                <h3>Changes to This Privacy Policy</h3>
+                <p>We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page. You are advised to review this Privacy Policy periodically for any changes. Changes to this Privacy Policy are effective when they are posted on this page. Your continued use of the service after any modifications to the Privacy Policy will constitute your acknowledgment of the modifications and your consent to abide and be bound by the modified Privacy Policy.</p>
+            </div>
+        </section>
     </div>
 
     <footer>
         <p>&copy; 2024 Visual Lotto Picker. All Rights Reserved.</p>
-        <p><a href="#about">About Us</a> | <a href="#privacy">Privacy Policy</a> | <a href="#contact">Contact</a></p>
+        <p><a href="#" onclick="showSection('about-us-section', this); return false;">About Us</a> | <a href="#" onclick="showSection('privacy-policy-section', this); return false;">Privacy Policy</a> | <a href="#" onclick="showSection('contact-section', this); return false;">Contact</a></p>
     </footer>
-
     
-
-
 <script>
     let picked = [];
     let currentMode = 'number';
@@ -342,7 +436,20 @@
     const jobs = ['doctor','scientist','programmer','astronaut','pilot','chef','artist','teacher','judge','architect','firefighter','police','dentist','musician','athlete','lawyer','nurse','designer','farmer','baker','mechanic','photographer','journalist','diplomat','barista','soldier','professor','reporter','carpenter','diver','florist','magician','painter','tailor','videographer','physicist','geologist','librarian','dancer','model','actor','sailor','coach','writer','dentist'];
 
     const langData = {
-        ko: { 
+        ko: {
+            lottoPickerTab: "로또 선택기",
+            animalTestTab: "동물상 테스트",
+            contactUsTab: "문의하기",
+            lottoInfoTab: "로또 정보",
+            aboutUsTab: "회사소개",
+            privacyPolicyTab: "개인정보 처리방침",
+            lottoPickerDesc: "사진을 통해 나만의 행운의 로또 번호를 선택하세요! 숫자를 직접 선택하거나, 다양한 테마의 이미지를 클릭하여 무작위 번호를 뽑을 수 있습니다. 또한, 특정 키워드를 검색하여 관련 이미지로 번호를 선택하는 색다른 경험을 할 수 있습니다. 매주 업데이트되는 다양한 이미지 테마와 함께 당신의 행운을 시험해보세요!",
+            animalTestDesc: "웹캠을 사용하여 내 얼굴이 어떤 동물상에 가까운지 테스트해보세요! 인공지능이 여러분의 얼굴 특징을 분석하여 강아지상, 고양이상, 토끼상 등 다양한 동물상 중 가장 닮은 유형을 찾아드립니다. '시작' 버튼을 누르고 카메라를 응시하면 흥미로운 결과를 바로 확인할 수 있습니다. 친구들과 함께 누가 더 재미있는 동물상이 나오는지 비교해보세요!",
+            contactDesc: "비주얼 로또 픽커에 대한 제휴 문의, 서비스 개선 제안, 기술 협력 등 다양한 의견을 기다립니다. 아래 양식을 작성하여 보내주시면 담당자가 신속하게 검토 후 연락드리겠습니다. 여러분의 소중한 의견은 더 나은 서비스를 만드는 데 큰 도움이 됩니다.",
+            lottoFactsTipsDesc: "로또는 단순한 운 이상의 재미있는 이야기와 통계가 숨어 있습니다. 이곳에서 로또의 흥미로운 사실들과 당첨 확률을 높일 수 있는 몇 가지 팁을 알아보세요. 하지만 로또는 언제나 오락으로 즐겨야 한다는 것을 잊지 마세요!",
+            aboutUsDesc: "비주얼 로또 픽커는 로또 번호 선택을 더욱 재미있고 특별한 경험으로 만들고자 합니다. 저희는 단순한 숫자 선택을 넘어, 다양한 시각적 테마와 인공지능 기술을 활용하여 사용자에게 영감을 주는 번호 선택 방식을 제공합니다. 꿈, 영화배우, 동물 등 여러분의 관심사를 로또 번호와 연결해보세요. 로또가 단순한 게임을 넘어 즐거운 상상과 기대의 시간이 될 수 있도록 돕는 것이 저희의 목표입니다. 행운을 빌며, 책임감 있는 게임을 장려합니다!",
+            privacyPolicyDesc: "비주얼 로또 픽커는 사용자의 개인정보 보호를 최우선으로 생각합니다. 저희 웹사이트에서 수집되는 모든 정보는 사용자 동의 하에 투명하게 처리되며, 서비스 제공 및 개선 목적으로만 사용됩니다. 개인정보 처리 방침을 자세히 읽어보시고 궁금한 점이 있으시면 언제든지 문의해주세요.",
+
             title: "🍀 비주얼 로또 픽커 (1-45)", 
             search: "검색", 
             reset: "초기화", 
@@ -355,9 +462,27 @@
             nameLabel: "이름:",
             emailLabel: "이메일:",
             messageLabel: "메시지:",
-            submitBtn: "보내기"
+            submitBtn: "보내기",
+            numberTab: "숫자",
+            dreamTab: "꿈 (직업)",
+            actorTab: "영화배우",
+            flagTab: "나라(국기)",
+            animalTab: "동물"
         },
-        en: { 
+        en: {
+            lottoPickerTab: "Lotto Picker",
+            animalTestTab: "Animal Face Test",
+            contactUsTab: "Contact Us",
+            lottoInfoTab: "Lotto Info",
+            aboutUsTab: "About Us",
+            privacyPolicyTab: "Privacy Policy",
+            lottoPickerDesc: "Choose your lucky lottery numbers through images! You can either pick numbers directly or click on images of various themes to get random numbers. You can also search for specific keywords to select numbers with related images, offering a unique experience. Try your luck with various image themes updated weekly!",
+            animalTestDesc: "Use your webcam to test which animal face you resemble! Our AI analyzes your facial features to find the closest match among various animal types like dog, cat, or rabbit faces. Press 'Start' and look into the camera to get immediate interesting results. Compare with your friends to see who gets a more amusing animal face!",
+            contactDesc: "We welcome partnership inquiries, service improvement suggestions, technical collaboration, and various other feedback regarding Visual Lotto Picker. Please fill out the form below, and our team will promptly review it and get back to you. Your valuable feedback greatly helps us create a better service.",
+            lottoFactsTipsDesc: "Lotto holds interesting stories and statistics beyond simple luck. Discover fascinating facts about lotto here and a few tips that might increase your chances of winning. But always remember that lotto should be enjoyed as entertainment!",
+            aboutUsDesc: "Visual Lotto Picker aims to make lottery number selection a more fun and unique experience. Beyond simple number picking, we provide inspiring ways to choose numbers by utilizing diverse visual themes and AI technology. Connect your interests—dreams, movie stars, animals—to your lotto numbers. Our goal is to help lotto become more than just a game, transforming it into a time of enjoyable imagination and anticipation. We wish you good luck and encourage responsible gaming!",
+            privacyPolicyDesc: "Visual Lotto Picker prioritizes user privacy. All information collected on our website is handled transparently with user consent and used solely for service provision and improvement purposes. Please read our privacy policy in detail and feel free to contact us with any questions.",
+
             title: "🍀 Visual Lotto Picker (1-45)", 
             search: "Search", 
             reset: "Reset", 
@@ -370,7 +495,12 @@
             nameLabel: "Name:",
             emailLabel: "Email:",
             messageLabel: "Message:",
-            submitBtn: "Submit"
+            submitBtn: "Submit",
+            numberTab: "Number",
+            dreamTab: "Dream (Career)",
+            actorTab: "Actors",
+            flagTab: "Flags",
+            animalTab: "Animals"
         }
     };
 
@@ -391,17 +521,38 @@
         document.getElementById('resetBtn').innerText = langObj.reset;
         searchInput.placeholder = langObj.placeholder;
         
-        document.querySelector('h2').innerText = langObj.animalTestTitle;
-        document.querySelector('button[onclick="init()"]').innerText = langObj.startBtn;
-        document.querySelector('.contact-form-container h3').innerText = langObj.contactTitle;
-        document.querySelector('label[for="name"]').innerText = langObj.nameLabel;
-        document.querySelector('label[for="email"]').innerText = langObj.emailLabel;
-        document.querySelector('label[for="message"]').innerText = langObj.messageLabel;
-        document.querySelector('.submit-btn').innerText = langObj.submitBtn;
+        // Update main navigation buttons
+        document.querySelector('.main-nav-btns button[data-section-id="lotto-picker-section"]').innerText = langObj.lottoPickerTab;
+        document.querySelector('.main-nav-btns button[data-section-id="animal-face-test-section"]').innerText = langObj.animalTestTab;
+        document.querySelector('.main-nav-btns button[data-section-id="contact-section"]').innerText = langObj.contactUsTab;
+        document.querySelector('.main-nav-btns button[data-section-id="lotto-facts-tips-section"]').innerText = langObj.lottoInfoTab;
+        document.querySelector('.main-nav-btns button[data-section-id="about-us-section"]').innerText = langObj.aboutUsTab;
+        document.querySelector('.main-nav-btns button[data-section-id="privacy-policy-section"]').innerText = langObj.privacyPolicyTab;
 
-        document.querySelectorAll('.nav-btns button').forEach(btn => {
-            btn.innerText = isEnglish ? btn.getAttribute('data-en') : btn.getAttribute('data-ko');
-        });
+        // Update descriptions
+        document.querySelector('#lotto-picker-section .description').innerText = langObj.lottoPickerDesc;
+        document.querySelector('#animal-face-test-section .description').innerText = langObj.animalTestDesc;
+        document.querySelector('#contact-section .description').innerText = langObj.contactDesc;
+        document.querySelector('#lotto-facts-tips-section .description').innerText = langObj.lottoFactsTipsDesc;
+        document.querySelector('#about-us-section .description').innerText = langObj.aboutUsDesc;
+        document.querySelector('#privacy-policy-section .description').innerText = langObj.privacyPolicyDesc;
+
+
+        document.querySelector('#animal-face-test-section h2').innerText = langObj.animalTestTitle;
+        document.querySelector('#animal-face-test-section button[onclick="init()"] ').innerText = langObj.startBtn;
+        document.querySelector('#contact-section h3').innerText = langObj.contactTitle;
+        document.querySelector('#contact-section label[for="name"]').innerText = langObj.nameLabel;
+        document.querySelector('#contact-section label[for="email"]').innerText = langObj.emailLabel;
+        document.querySelector('#contact-section label[for="message"]').innerText = langObj.messageLabel;
+        document.querySelector('#contact-section .submit-btn').innerText = langObj.submitBtn;
+
+        // Update nav-btns inside lotto picker section
+        document.querySelector('.nav-btns button[onclick="changeTab(\'number\', this)"]').innerText = langObj.numberTab;
+        document.querySelector('.nav-btns button[onclick="changeTab(\'dream\', this)"]').innerText = langObj.dreamTab;
+        document.querySelector('.nav-btns button[onclick="changeTab(\'actor\', this)"]').innerText = langObj.actorTab;
+        document.querySelector('.nav-btns button[onclick="changeTab(\'flag\', this)"]').innerText = langObj.flagTab;
+        document.querySelector('.nav-btns button[onclick="changeTab(\'animal\', this)"]').innerText = langObj.animalTab;
+
         updateModeTitle();
     }
 
@@ -412,8 +563,33 @@
 
     searchInput.addEventListener("keyup", (e) => { if (e.key === "Enter") handleSearch(); });
 
+    // New function to show/hide sections based on tab clicks
+    function showSection(sectionId, element) {
+        // Hide all sections
+        document.querySelectorAll('.tab-content').forEach(section => {
+            section.classList.remove('active');
+        });
+
+        // Deactivate all tab buttons
+        document.querySelectorAll('.main-nav-btns .tab-button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+
+        // Show the selected section
+        document.getElementById(sectionId).classList.add('active');
+
+        // Activate the clicked tab button
+        element.classList.add('active');
+
+        // Scroll to top of the content area
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+
     window.onload = () => {
-        changeTab('number', document.querySelector('.nav-btns button'));
+        // Activate the first tab by default on load
+        showSection('lotto-picker-section', document.querySelector('.main-nav-btns .tab-button.active'));
+        changeTab('number', document.querySelector('.nav-btns button')); // Initialize lotto picker sub-tabs
     };
 
     function changeTab(mode, btn) {
