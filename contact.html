@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>문의하기 - Global Visual Lotto Picker</title>
+    <meta name="google-adsense-account" content="ca-pub-3385745246239215">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3385745246239215"
+     crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E2LZG9LFRV"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-E2LZG9LFRV');
+    </script>
+</head>
+<body>
+
+    <div class="top-bar">
+        <button class="util-btn" onclick="toggleDarkMode()" id="modeBtn">🌙 Dark Mode</button>
+        <button class="util-btn" onclick="toggleLanguage()" id="langBtn"></button>
+    </div>
+
+    <div class="main-nav-btns">
+        <a href="index.html" class="tab-button" data-lang-key="lottoPickerTab"></a>
+        <a href="animal-face-test.html" class="tab-button" data-lang-key="animalTestTab"></a>
+        <a href="contact.html" class="tab-button active" data-lang-key="contactUsTab"></a>
+        <a href="lotto-info.html" class="tab-button" data-lang-key="lottoInfoTab"></a>
+        <a href="about-us.html" class="tab-button" data-lang-key="aboutUsTab"></a>
+        <a href="privacy-policy.html" class="tab-button" data-lang-key="privacyPolicyTab"></a>
+    </div>
+
+    <div id="main-content-wrapper">
+        <!-- Contact Form Section -->
+        <section id="contact-section" class="tab-content active">
+            <div class="contact-form-container">
+                <h3 id="contactTitle" data-lang-key="contactTitle"></h3>
+                <p class="description" data-lang-key="contactDesc"></p>
+                <form action="https://formspree.io/f/xaqqyrbn" method="POST" class="contact-form">
+                    <div class="form-group">
+                        <label for="name" id="nameLabel" data-lang-key="nameLabel"></label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" id="emailLabel" data-lang-key="emailLabel"></label>
+                        <input type="email" id="email" name="_replyto" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message" id="messageLabel" data-lang-key="messageLabel"></label>
+                        <textarea id="message" name="message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn" id="submitBtn" data-lang-key="submitBtn"></button>
+                </form>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Visual Lotto Picker. All Rights Reserved.</p>
+        <p><a href="about-us.html" data-lang-key="aboutUsTab"></a> | <a href="privacy-policy.html" data-lang-key="privacyPolicyTab"></a> | <a href="contact.html" data-lang-key="contactUsTab"></a></p>
+    </footer>
+    
+    <script src="main.js"></script>
+</body>
+</html>

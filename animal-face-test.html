@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Global Visual Lotto Picker (1-45)</title>
+    <title>동물상 테스트 - Global Visual Lotto Picker</title>
     <meta name="google-adsense-account" content="ca-pub-3385745246239215">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3385745246239215"
      crossorigin="anonymous"></script>
@@ -27,8 +27,8 @@
     </div>
 
     <div class="main-nav-btns">
-        <a href="index.html" class="tab-button active" data-lang-key="lottoPickerTab"></a>
-        <a href="animal-face-test.html" class="tab-button" data-lang-key="animalTestTab"></a>
+        <a href="index.html" class="tab-button" data-lang-key="lottoPickerTab"></a>
+        <a href="animal-face-test.html" class="tab-button active" data-lang-key="animalTestTab"></a>
         <a href="contact.html" class="tab-button" data-lang-key="contactUsTab"></a>
         <a href="lotto-info.html" class="tab-button" data-lang-key="lottoInfoTab"></a>
         <a href="about-us.html" class="tab-button" data-lang-key="aboutUsTab"></a>
@@ -36,30 +36,14 @@
     </div>
 
     <div id="main-content-wrapper">
-        <!-- Lotto Picker Section -->
-        <section id="lotto-picker-section" class="tab-content active">
-            <div class="controls">
-                <h2 id="mainTitle"></h2>
-                <p class="description" data-lang-key="lottoPickerDesc"></p>
-                <div class="nav-btns">
-                    <button onclick="changeTab('number', this)" class="active" data-lang-key="numberTab"></button>
-                    <button onclick="changeTab('dream', this)" data-lang-key="dreamTab"></button>
-                    <button onclick="changeTab('actor', this)" data-lang-key="actorTab"></button>
-                    <button onclick="changeTab('flag', this)" data-lang-key="flagTab"></button>
-                    <button onclick="changeTab('animal', this)" data-lang-key="animalTab"></button>
-                </div>
-                <div class="search-group">
-                    <input type="text" id="customInput">
-                    <button onclick="handleSearch()" id="searchBtn" style="background:#34c759; color:white; border:none; border-radius:10px; padding:0 20px; cursor:pointer; font-weight:bold;"></button>
-                </div>
-            </div>
-
-            <div id="grid" class="grid"></div>
-
-            <div class="result-panel">
-                <h3 id="modeTitle"></h3>
-                <div id="selectedBalls" class="balls"></div>
-                <button class="reset-btn" onclick="resetAll()" id="resetBtn"></button>
+        <!-- Animal Face Test Section -->
+        <section id="animal-face-test-section" class="tab-content active">
+            <div class="content-section">
+                <h2 id="animalTestTitle" data-lang-key="animalTestTitle"></h2>
+                <p class="description" data-lang-key="animalTestDesc"></p>
+                <button type="button" onclick="init()" id="startBtn" data-lang-key="startBtn"></button>
+                <div id="webcam-container"></div>
+                <div id="label-container"></div>
             </div>
         </section>
     </div>

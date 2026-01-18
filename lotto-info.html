@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>로또 정보 - Global Visual Lotto Picker</title>
+    <meta name="google-adsense-account" content="ca-pub-3385745246239215">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3385745246239215"
+     crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E2LZG9LFRV"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-E2LZG9LFRV');
+    </script>
+</head>
+<body>
+
+    <div class="top-bar">
+        <button class="util-btn" onclick="toggleDarkMode()" id="modeBtn">🌙 Dark Mode</button>
+        <button class="util-btn" onclick="toggleLanguage()" id="langBtn"></button>
+    </div>
+
+    <div class="main-nav-btns">
+        <a href="index.html" class="tab-button" data-lang-key="lottoPickerTab"></a>
+        <a href="animal-face-test.html" class="tab-button" data-lang-key="animalTestTab"></a>
+        <a href="contact.html" class="tab-button" data-lang-key="contactUsTab"></a>
+        <a href="lotto-info.html" class="tab-button active" data-lang-key="lottoInfoTab"></a>
+        <a href="about-us.html" class="tab-button" data-lang-key="aboutUsTab"></a>
+        <a href="privacy-policy.html" class="tab-button" data-lang-key="privacyPolicyTab"></a>
+    </div>
+
+    <div id="main-content-wrapper">
+        <!-- Lotto Fun Facts & Tips Section -->
+        <section id="lotto-facts-tips-section" class="content-section tab-content active">
+            <h2 data-lang-key="lottoFunFactsTitle"></h2>
+            <p class="description" data-lang-key="lottoFactsTipsDesc"></p>
+
+            <div class="article">
+                <h3 data-lang-key="lottoMathTitle"></h3>
+                <p data-lang-key="lottoMathContent"></p>
+            </div>
+            <div class="article">
+                <h3 data-lang-key="lottoDreamsTitle"></h3>
+                <p data-lang-key="lottoDreamsContent"></p>
+            </div>
+            <div class="article">
+                <h3 data-lang-key="lottoTipsTitle"></h3>
+                <p data-lang-key="lottoTipsContent"></p>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Visual Lotto Picker. All Rights Reserved.</p>
+        <p><a href="about-us.html" data-lang-key="aboutUsTab"></a> | <a href="privacy-policy.html" data-lang-key="privacyPolicyTab"></a> | <a href="contact.html" data-lang-key="contactUsTab"></a></p>
+    </footer>
+    
+    <script src="main.js"></script>
+</body>
+</html>
