@@ -1,16 +1,17 @@
-# Blueprint for SEO Optimization
+# Blueprint for SEO & GEO Optimization
 
-This document outlines the plan for optimizing the website for search engines.
+This document outlines the plan for optimizing the website for search engines and generative AI.
 
 ## Overview
 
-The goal is to improve the website's visibility in search engine results by implementing SEO best practices as defined by Google and Naver.
+The goal is to improve the website's visibility in search engine results and generative AI recommendations by implementing SEO and GEO (Generative Engine Optimization) best practices as defined by Google, Naver, and recent AI-focused marketing articles.
 
 ## Current State Analysis
 
-*   **HTML:** The HTML files had basic SEO elements but have now been improved. The `meta keywords` tag has been removed. Canonical URLs and Open Graph tags are now consistent. Footer links have content. H1 headings are more descriptive. Render-blocking scripts have been moved.
+*   **HTML:** The HTML files have been significantly improved with better meta tags, canonical URLs, descriptive H1 tags, and structured content.
 *   **`robots.txt`:** The file is correctly configured to allow crawlers and points to the sitemap.
-*   **`sitemap.xml`:** The sitemap has been corrected to remove duplicate content for the main page.
+*   **`sitemap.xml`:** The sitemap is correctly formatted.
+*   **`firebase.json`:** The hosting configuration is set up with redirects, security headers, and a custom 404 page.
 
 ## Optimization Plan
 
@@ -28,6 +29,8 @@ The goal is to improve the website's visibility in search engine results by impl
     - [x] Fix the empty footer links.
     - [x] Made `<h1>` tag more descriptive.
     - [x] Moved render-blocking scripts to the end of the `<body>`.
+    - [x] Added FAQ section.
+    - [x] Made meta description more conversational.
 
 - [x] **`about-us.html` Specific Optimizations:**
     - [x] Made `<h1>` tag more descriptive.
@@ -35,12 +38,16 @@ The goal is to improve the website's visibility in search engine results by impl
 - [x] **`animal-face-test.html` Specific Optimizations:**
     - [x] Made `<h1>` tag more descriptive.
     - [x] Moved render-blocking scripts to the end of the `<body>`.
+    - [x] Added FAQ section.
+    - [x] Made meta description more conversational.
 
 - [x] **`contact.html` Specific Optimizations:**
     - [x] Made `<h1>` tag more descriptive.
 
 - [x] **`lotto-info.html` Specific Optimizations:**
     - [x] Made `<h1>` tag more descriptive.
+    - [x] Added FAQ section.
+    - [x] Made meta description more conversational.
 
 - [x] **`privacy-policy.html` Specific Optimizations:**
     - [x] Made `<h1>` tag more descriptive.
@@ -51,6 +58,11 @@ The goal is to improve the website's visibility in search engine results by impl
 
 - [x] **Structured Data (Schema.org):**
     - [x] Review and enhance structured data on all pages to better describe the content to search engines.
+
+- [x] **GEO (Generative Engine Optimization):**
+    - [x] Made content more conversational and user-centric.
+    - [x] Added FAQ sections to relevant pages.
+    - [x] Improved page descriptions to be more engaging.
 
 - [ ] **Content Analysis and Optimization:**
     - [ ] Review the content of each page to ensure it is high-quality, user-focused, and uses relevant keywords naturally.
@@ -73,19 +85,19 @@ The goal is to improve the website's visibility in search engine results by impl
 
 ## Summary of Changes
 
-*   **`sitemap.xml`**: Removed duplicate `index.html` entry and updated `lastmod` dates.
 *   **HTML files**:
-    *   Removed `keywords` meta tag.
-    *   Updated canonical URLs.
-    *   Added `og:locale` meta tag.
-    *   Updated Open Graph and Twitter card meta tags to be page-specific.
-    *   Made `<h1>` tags more descriptive.
+    *   Added FAQ sections to `index.html`, `lotto-info.html`, and `animal-face-test.html`.
+    *   Updated meta descriptions in `index.html`, `lotto-info.html`, and `animal-face-test.html` to be more conversational.
+    *   Removed duplicate scripts in `index.html`.
+    *   Made `<h1>` tags more descriptive across all pages.
     *   Moved render-blocking scripts to the end of the `<body>` in `index.html` and `animal-face-test.html`.
-    *   Ensured footer and navigation links have content.
-    *   Added missing SEO meta tags (description, OG, Twitter), canonical URL, sitemap link, schema.org data, `og:locale`, and viewport meta tag to `contact.html`, `lotto-info.html`, and `privacy-policy.html`.
-*   **`firebase.json`**: Created to handle redirects, security headers (HSTS, CSP, X-Content-Type-Options, X-Frame-Options, X-XSS-Protection), `www` to non-`www` redirection, custom 404 page, and `ads.txt` content type.
+*   **`firebase.json`**:
+    *   Added `www` to non-`www` redirect.
+    *   Added HSTS header.
+    *   Configured a custom 404 page.
+    *   Ensured `ads.txt` is served with the correct `Content-Type`.
 *   **`404.html`**: Created a custom 404 error page.
 
-I have completed all the technical SEO optimizations. The remaining tasks are content-focused and require a deeper understanding of the business goals.
+I have completed the GEO optimizations. The website content is now more conversational and structured to be more easily understood by generative AI.
 
 I will now commit the latest changes to the git repository.
