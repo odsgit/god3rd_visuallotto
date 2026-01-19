@@ -4,538 +4,119 @@
     <meta charset="UTF-8">
     <title>Global Visual Lotto Picker (1-45)</title>
     <meta name="google-adsense-account" content="ca-pub-3385745246239215">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3385745246239215"
-     crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
-    <style>
-        :root {
-            --bg: #f2f2f7; --card-bg: #ffffff; --text: #1c1c1e;
-            --primary: #007aff; --result-panel: #1c1c1e; --border-color: #ddd;
-        }
-        body.dark-mode {
-            --bg: #121212; --card-bg: #1e1e1e; --text: #ffffff;
-            --primary: #0a84ff; --result-panel: #2c2c2e; --border-color: #444;
-        }
-
-        body { font-family: 'Apple SD Gothic Neo', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; transition: 0.3s; display: flex; flex-direction: column; align-items: center; }
-        
-        .top-bar { display: flex; justify-content: space-between; width: 100%; max-width: 900px; margin-bottom: 10px; }
-        .controls { background: var(--card-bg); padding: 25px; border-radius: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.05); width: 100%; max-width: 900px; margin-bottom: 20px; text-align: center; }
-        
-        .nav-btns { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-        .nav-btns button { padding: 10px 18px; border: 1px solid var(--border-color); border-radius: 10px; background: var(--card-bg); color: var(--text); cursor: pointer; font-weight: 700; transition: 0.2s; }
-        .nav-btns button.active { background: var(--primary); color: white; border-color: var(--primary); }
-
-        .search-group { display: flex; justify-content: center; gap: 10px; padding-top: 15px; border-top: 1px solid var(--border-color); }
-        input { padding: 12px; width: 250px; border: 2px solid var(--border-color); border-radius: 10px; outline: none; background: var(--card-bg); color: var(--text); }
-
-        /* 5*9 그리드 설정 */
-        .grid { 
-            display: grid; 
-            grid-template-columns: repeat(9, 1fr); /* 9열 */
-            grid-template-rows: repeat(5, 1fr);    /* 5행 */
-            gap: 10px; 
-            width: 100%; 
-            max-width: 900px; 
-            background: var(--card-bg); 
-            padding: 20px; 
-            border-radius: 20px; 
-            box-shadow: 0 10px 40px rgba(0,0,0,0.08); 
-        }
-        
-        .item { aspect-ratio: 1/1; border-radius: 10px; overflow: hidden; cursor: pointer; position: relative; border: 3px solid transparent; background: #8882; transition: 0.2s; }
-        .item:hover { transform: scale(1.05); border-color: #ff3b30; z-index: 5; }
-        .item img { width: 100%; height: 100%; object-fit: cover; }
-        .item .num-label { height: 100%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 800; }
-
-        .result-panel { margin-top: 30px; width: 100%; max-width: 600px; text-align: center; padding: 25px; background: var(--result-panel); border-radius: 20px; color: white; }
-        .balls { display: flex; justify-content: center; gap: 12px; margin: 20px 0; min-height: 55px; }
-        .ball { width: 55px; height: 55px; line-height: 55px; border-radius: 50%; background: linear-gradient(135deg, #ffcc00, #ff9500); color: #000; font-weight: bold; font-size: 1.4rem; }
-        
-        .util-btn { padding: 8px 15px; border-radius: 8px; border: 1px solid var(--border-color); cursor: pointer; font-size: 13px; background: var(--card-bg); color: var(--text); font-weight: bold; }
-        .reset-btn { background: #ff3b30; color: white; border: none; padding: 12px 40px; border-radius: 10px; cursor: pointer; font-weight: bold; }
-
-        
-        /* Contact Form Styles */
-        .contact-form-container {
-            margin-top: 30px;
-            width: 100%;
-            max-width: 600px;
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 20px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.05);
-            text-align: center;
-        }
-
-        .contact-form-container h3 {
-            color: var(--text);
-            margin-bottom: 20px;
-        }
-
-        .contact-form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .form-group {
-            text-align: left;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: var(--text);
-        }
-
-        .contact-form input[type="text"],
-        .contact-form input[type="email"],
-        .contact-form textarea {
-            width: calc(100% - 24px); /* Account for padding */
-            padding: 12px;
-            border: 2px solid var(--border-color);
-            border-radius: 10px;
-            outline: none;
-            background: var(--card-bg); /* Use card-bg for inputs for consistency */
-            color: var(--text);
-            box-sizing: border-box; /* Include padding in element's total width and height */
-            transition: border-color 0.2s;
-        }
-
-        .contact-form input[type="text"]:focus,
-        .contact-form input[type="email"]:focus,
-        .contact-form textarea:focus {
-            border-color: var(--primary);
-        }
-
-        .contact-form textarea {
-            resize: vertical; /* Allow vertical resizing */
-        }
-
-        .submit-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px 40px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 1rem;
-            margin-top: 10px;
-            transition: background-color 0.2s;
-        }
-
-        .submit-btn:hover {
-            background-color: #0056b3; /* Darker shade for hover */
-        }
-
-        .content-section {
-            margin-top: 30px;
-            width: 100%;
-            max-width: 900px;
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 20px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.05);
-        }
-        .article {
-            margin-bottom: 20px;
-        }
-        .article h3 {
-            color: var(--text);
-        }
-        footer {
-            margin-top: 30px;
-            text-align: center;
-            width: 100%;
-            max-width: 900px;
-            padding: 20px;
-            background: var(--card-bg);
-            border-radius: 20px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.05);
-        }
-        footer a {
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        @media screen and (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-
-            .top-bar, .controls, .grid, .result-panel, .contact-form-container, .content-section, footer {
-                max-width: 100%;
-                padding: 15px;
-                border-radius: 10px;
-            }
-
-            .nav-btns {
-                gap: 5px;
-                justify-content: space-around;
-            }
-
-            .nav-btns button {
-                padding: 8px 12px;
-                font-size: 0.9rem;
-                border-radius: 8px;
-            }
-
-            .search-group {
-                flex-direction: column;
-                gap: 8px;
-            }
-
-            input {
-                width: calc(100% - 24px); /* Account for padding */
-                padding: 10px;
-                font-size: 1rem;
-            }
-            
-            .search-group button {
-                width: 100%;
-                padding: 10px;
-            }
-
-            .grid {
-                grid-template-columns: repeat(4, 1fr); /* 4열로 변경 */
-                gap: 8px;
-                padding: 15px;
-            }
-
-            .item .num-label {
-                font-size: 18px;
-            }
-
-            .balls {
-                gap: 8px;
-            }
-
-            .ball {
-                width: 45px;
-                height: 45px;
-                line-height: 45px;
-                font-size: 1.2rem;
-            }
-
-            .reset-btn, .submit-btn {
-                padding: 10px 30px;
-                font-size: 0.9rem;
-            }
-
-            h2, h3 {
-                font-size: 1.3rem;
-            }
-
-            .top-bar {
-                flex-direction: column;
-                align-items: center;
-                gap: 10px;
-            }
-            .util-btn {
-                width: 100%;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <div style="text-align: center; margin-bottom: 20px;">
-        <h2>동물상 테스트</h2>
-        <button type="button" onclick="init()">Start</button>
-        <div id="webcam-container"></div>
-        <div id="label-container"></div>
-    </div>
-
-    <div class="top-bar">
-        <button class="util-btn" onclick="toggleDarkMode()" id="modeBtn">🌙 Dark Mode</button>
-        <button class="util-btn" onclick="toggleLanguage()" id="langBtn">🇺🇸 English</button>
-    </div>
-
-    <div class="controls">
-        <h2 id="mainTitle">🍀 비주얼 로또 픽커 (1-45)</h2>
-        <div class="nav-btns">
-            <button onclick="changeTab('number', this)" class="active" data-ko="숫자" data-en="Number">숫자</button>
-            <button onclick="changeTab('dream', this)" data-ko="꿈 (진로)" data-en="Dream (Career)">꿈 (진로)</button>
-            <button onclick="changeTab('actor', this)" data-ko="영화배우" data-en="Actors">영화배우</button>
-            <button onclick="changeTab('flag', this)" data-ko="나라(국기)" data-en="Flags">나라(국기)</button>
-            <button onclick="changeTab('animal', this)" data-ko="동물" data-en="Animals">동물</button>
+    <header>
+        <div class="top-bar">
+            <button class="util-btn" onclick="toggleDarkMode()" id="modeBtn">🌙 Dark Mode</button>
+            <button class="util-btn" onclick="toggleLanguage()" id="langBtn">🇺🇸 English</button>
         </div>
-        <div class="search-group">
-            <input type="text" id="customInput" placeholder="검색어 입력 (Enter)">
-            <button onclick="handleSearch()" id="searchBtn" style="background:#34c759; color:white; border:none; border-radius:10px; padding:0 20px; cursor:pointer; font-weight:bold;">검색</button>
+        <div class="main-nav-btns">
+            <button class="tab-button active" onclick="showSection('lotto-picker-section', this)" data-lang-key="lottoPickerTab">Lotto Picker</button>
+            <button class="tab-button" onclick="showSection('animal-face-test-section', this)" data-lang-key="animalTestTab">Animal Face Test</button>
+            <button class="tab-button" onclick="showSection('contact-section', this)" data-lang-key="contactTab">Contact Us</button>
+            <button class="tab-button" onclick="showSection('lotto-info-section', this)" data-lang-key="lottoInfoTab">Lotto Info</button>
+            <button class="tab-button" onclick="showSection('about-section', this)" data-lang-key="aboutTab">About Us</button>
+            <button class="tab-button" onclick="showSection('privacy-section', this)" data-lang-key="privacyTab">Privacy Policy</button>
         </div>
-    </div>
+    </header>
 
-    <div id="grid" class="grid"></div>
-
-    <div class="result-panel">
-        <h3 id="modeTitle">숫자를 직접 선택하세요!</h3>
-        <div id="selectedBalls" class="balls"></div>
-        <button class="reset-btn" onclick="resetAll()" id="resetBtn">초기화</button>
-    </div>
-
-    <div class="contact-form-container">
-        <h3>제휴 문의</h3>
-        <form action="https://formspree.io/f/xaqqyrbn" method="POST" class="contact-form">
-            <div class="form-group">
-                <label for="name">이름:</label>
-                <input type="text" id="name" name="name" required>
+    <main>
+        <section id="lotto-picker-section" class="tab-content active">
+            <div class="controls">
+                <h2 id="mainTitle" data-lang-key="title">🍀 Visual Lotto Picker (1-45)</h2>
+                <div class="nav-btns">
+                    <button onclick="changeTab('number', this)" class="active" data-lang-key="numberTab">Number</button>
+                    <button onclick="changeTab('dream', this)" data-lang-key="dreamTab">Dream (Career)</button>
+                    <button onclick="changeTab('actor', this)" data-lang-key="actorTab">Actors</button>
+                    <button onclick="changeTab('flag', this)" data-lang-key="flagTab">Flags</button>
+                    <button onclick="changeTab('animal', this)" data-lang-key="animalTab">Animals</button>
+                </div>
+                <div class="search-group">
+                    <input type="text" id="customInput" data-lang-key="placeholder" placeholder="Enter keyword (Enter)">
+                    <button onclick="handleSearch()" id="searchBtn" data-lang-key="search" style="background:#34c759; color:white; border:none; border-radius:10px; padding:0 20px; cursor:pointer; font-weight:bold;">Search</button>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="email">이메일:</label>
-                <input type="email" id="email" name="_replyto" required>
+            <div id="grid" class="grid"></div>
+            <div class="result-panel">
+                <h3 id="modeTitle" data-lang-key="numMsg">Click a number to pick!</h3>
+                <div id="selectedBalls" class="balls"></div>
+                <button class="reset-btn" onclick="resetAll()" id="resetBtn" data-lang-key="reset">Reset</button>
             </div>
-            <div class="form-group">
-                <label for="message">메시지:</label>
-                <textarea id="message" name="message" rows="5" required></textarea>
+        </section>
+
+        <section id="animal-face-test-section" class="tab-content" style="display: none;">
+            <div class="content-section">
+                <h2 data-lang-key="animalTestTitle">Animal Face Test</h2>
+                <button type="button" onclick="init()" data-lang-key="startBtn">Start</button>
+                <div id="webcam-container"></div>
+                <div id="label-container"></div>
             </div>
-            <button type="submit" class="submit-btn">보내기</button>
-        </form>
-    </div>
+        </section>
 
-    </div>
+        <section id="contact-section" class="tab-content" style="display: none;">
+            <div class="contact-form-container">
+                <h3 data-lang-key="contactTitle">Contact Us</h3>
+                <form action="https://formspree.io/f/xaqqyrbn" method="POST" class="contact-form">
+                    <div class="form-group">
+                        <label for="name" data-lang-key="nameLabel">Name:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" data-lang-key="emailLabel">Email:</label>
+                        <input type="email" id="email" name="_replyto" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message" data-lang-key="messageLabel">Message:</label>
+                        <textarea id="message" name="message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn" data-lang-key="submitBtn">Submit</button>
+                </form>
+            </div>
+        </section>
 
-    <div class="content-section">
-        <h2>Lotto Fun Facts & Tips</h2>
-        <div class="article">
-            <h3>The Surprising Math Behind Lotto Numbers</h3>
-            <p>Many people believe that lotto numbers are purely random, but there are some interesting mathematical patterns that can be observed. While these patterns don't guarantee a win, they can make the number selection process more interesting. For example, some studies have shown that odd and even numbers tend to be drawn in a balanced way. This is just one of many fascinating aspects of the mathematics of chance.</p>
-        </div>
-        <div class="article">
-            <h3>Can Your Dreams Really Predict Lotto Numbers?</h3>
-            <p>Throughout history, people have looked for signs and symbols to guide their lottery picks. Dreams are a common source of inspiration. While there is no scientific evidence to support the idea that dreams can predict winning numbers, many players find it a fun and exciting way to choose their numbers. Our "Dream" category is inspired by this long-standing tradition of finding personal meaning in the numbers you choose.</p>
-        </div>
-    </div>
+        <section id="lotto-info-section" class="tab-content" style="display: none;">
+            <div class="content-section">
+                <h2 data-lang-key="lottoInfoTitle">Lotto Fun Facts & Tips</h2>
+                <div class="article">
+                    <h3 data-lang-key="lottoMathTitle">The Surprising Math Behind Lotto Numbers</h3>
+                    <p data-lang-key="lottoMathContent">Many people believe that lotto numbers are purely random...</p>
+                </div>
+                <div class="article">
+                    <h3 data-lang-key="lottoDreamsTitle">Can Your Dreams Really Predict Lotto Numbers?</h3>
+                    <p data-lang-key="lottoDreamsContent">Throughout history, people have looked for signs and symbols...</p>
+                </div>
+            </div>
+        </section>
 
-    <div id="about" class="page-section" style="display: none;">
-        <h2>About Us</h2>
-        <p>Visual Lotto Picker is a fun and interactive way to choose your lottery numbers. We believe that choosing your numbers should be an exciting experience. Our website uses a variety of visual themes to help you find your lucky numbers. Whether you're inspired by your dreams, your favorite actor, or the colors of a national flag, our visual picker can help you make a choice that feels right for you. Our goal is to make the lottery more engaging and enjoyable for everyone.</p>
-    </div>
+        <section id="about-section" class="tab-content" style="display: none;">
+            <div class="content-section">
+                <h2 data-lang-key="aboutTitle">About Us</h2>
+                <p data-lang-key="aboutContent">Visual Lotto Picker is a fun and interactive way...</p>
+            </div>
+        </section>
 
-    <div id="privacy" class="page-section" style="display: none;">
-        <h2>Privacy Policy</h2>
-        <p>Your privacy is important to us. It is Visual Lotto Picker's policy to respect your privacy regarding any information we may collect from you across our website. We only ask for personal information when we truly need it to provide a service to you. We collect it by fair and lawful means, with your knowledge and consent. We also let you know why we’re collecting it and how it will be used. We only retain collected information for as long as necessary to provide you with your requested service. What data we store, we’ll protect within commercially acceptable means to prevent loss and theft, as well as unauthorized access, disclosure, copying, use or modification. We don’t share any personally identifying information publicly or with third-parties, except when required to by law. Our website may link to external sites that are not operated by us. Please be aware that we have no control over the content and practices of these sites, and cannot accept responsibility or liability for their respective privacy policies. You are free to refuse our request for your personal information, with the understanding that we may be unable to provide you with some of your desired services. Your continued use of our website will be regarded as acceptance of our practices around privacy and personal information. If you have any questions about how we handle user data and personal information, feel free to contact us.</p>
-    </div>
-
+        <section id="privacy-section" class="tab-content" style="display: none;">
+            <div class="content-section">
+                <h2 data-lang-key="privacyTitle">Privacy Policy</h2>
+                <p data-lang-key="privacyContent">Your privacy is important to us...</p>
+            </div>
+        </section>
+    </main>
+    
     <footer>
         <p>&copy; 2024 Visual Lotto Picker. All Rights Reserved.</p>
-        <p><a href="#about">About Us</a> | <a href="#privacy">Privacy Policy</a> | <a href="#contact">Contact</a></p>
+        <p>
+            <a href="#" onclick="showSection('about-section', this); return false;" data-lang-key="aboutTab">About Us</a> | 
+            <a href="#" onclick="showSection('privacy-section', this); return false;" data-lang-key="privacyTab">Privacy Policy</a> | 
+            <a href="#" onclick="showSection('contact-section', this); return false;" data-lang-key="contactTab">Contact</a>
+        </p>
     </footer>
 
-    
-
-
-<script>
-    let picked = [];
-    let currentMode = 'number';
-    let isEnglish = false;
-    const gridDiv = document.getElementById('grid');
-    const ballDiv = document.getElementById('selectedBalls');
-    const modeTitle = document.getElementById('modeTitle');
-    const searchInput = document.getElementById('customInput');
-
-    // 45개 직업 리스트
-    const jobs = ['doctor','scientist','programmer','astronaut','pilot','chef','artist','teacher','judge','architect','firefighter','police','dentist','musician','athlete','lawyer','nurse','designer','farmer','baker','mechanic','photographer','journalist','diplomat','barista','soldier','professor','reporter','carpenter','diver','florist','magician','painter','tailor','videographer','physicist','geologist','librarian','dancer','model','actor','sailor','coach','writer','dentist'];
-
-    const langData = {
-        ko: { 
-            title: "🍀 비주얼 로또 픽커 (1-45)", 
-            search: "검색", 
-            reset: "초기화", 
-            placeholder: "검색어 입력 (Enter)", 
-            numMsg: "숫자를 직접 선택하세요!", 
-            randMsg: "사진을 클릭하면 랜덤 번호 추출!",
-            animalTestTitle: "동물상 테스트",
-            startBtn: "시작",
-            contactTitle: "제휴 문의",
-            nameLabel: "이름:",
-            emailLabel: "이메일:",
-            messageLabel: "메시지:",
-            submitBtn: "보내기"
-        },
-        en: { 
-            title: "🍀 Visual Lotto Picker (1-45)", 
-            search: "Search", 
-            reset: "Reset", 
-            placeholder: "Enter keyword (Enter)", 
-            numMsg: "Click a number to pick!", 
-            randMsg: "Click a photo for a random number!",
-            animalTestTitle: "Animal Face Test",
-            startBtn: "Start",
-            contactTitle: "Contact Us",
-            nameLabel: "Name:",
-            emailLabel: "Email:",
-            messageLabel: "Message:",
-            submitBtn: "Submit"
-        }
-    };
-
-    function toggleDarkMode() {
-        document.body.classList.toggle('dark-mode');
-        const isDark = document.body.classList.contains('dark-mode');
-        document.getElementById('modeBtn').innerText = isDark ? "☀️ Light Mode" : "🌙 Dark Mode";
-    }
-
-    function toggleLanguage() {
-        isEnglish = !isEnglish;
-        const lang = isEnglish ? 'en' : 'ko';
-        const langObj = langData[lang];
-
-        document.getElementById('langBtn').innerText = isEnglish ? "🇰🇷 한국어" : "🇺🇸 English";
-        document.getElementById('mainTitle').innerText = langObj.title;
-        document.getElementById('searchBtn').innerText = langObj.search;
-        document.getElementById('resetBtn').innerText = langObj.reset;
-        searchInput.placeholder = langObj.placeholder;
-        
-        document.querySelector('h2').innerText = langObj.animalTestTitle;
-        document.querySelector('button[onclick="init()"]').innerText = langObj.startBtn;
-        document.querySelector('.contact-form-container h3').innerText = langObj.contactTitle;
-        document.querySelector('label[for="name"]').innerText = langObj.nameLabel;
-        document.querySelector('label[for="email"]').innerText = langObj.emailLabel;
-        document.querySelector('label[for="message"]').innerText = langObj.messageLabel;
-        document.querySelector('.submit-btn').innerText = langObj.submitBtn;
-
-        document.querySelectorAll('.nav-btns button').forEach(btn => {
-            btn.innerText = isEnglish ? btn.getAttribute('data-en') : btn.getAttribute('data-ko');
-        });
-        updateModeTitle();
-    }
-
-    function updateModeTitle() {
-        const lang = isEnglish ? 'en' : 'ko';
-        modeTitle.innerText = currentMode === 'number' ? langData[lang].numMsg : langData[lang].randMsg;
-    }
-
-    searchInput.addEventListener("keyup", (e) => { if (e.key === "Enter") handleSearch(); });
-
-    window.onload = () => {
-        changeTab('number', document.querySelector('.nav-btns button'));
-    };
-
-    function changeTab(mode, btn) {
-        currentMode = mode;
-        document.querySelectorAll('.nav-btns button').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        updateModeTitle();
-
-        const keywords = { number: '', dream: 'career', actor: 'portrait,actor,famous', flag: 'national,flag', animal: 'animal,wildlife' };
-        render(keywords[mode]);
-    }
-
-    function handleSearch() {
-        const val = searchInput.value.trim();
-        if(!val) return;
-        currentMode = 'search';
-        modeTitle.innerText = isEnglish ? `Click "${val}" photos!` : `"${val}" 사진을 클릭하세요!`;
-        render(val);
-    }
-
-    function render(keyword) {
-        gridDiv.innerHTML = '';
-        for (let i = 1; i <= 45; i++) { // 45번까지
-            const box = document.createElement('div');
-            box.className = 'item';
-            box.onclick = () => (currentMode === 'number') ? addNum(i) : pickRandom();
-
-            if (currentMode === 'number') {
-                box.innerHTML = `<div class="num-label">${i}</div>`;
-            } else {
-                const img = document.createElement('img');
-                let finalTag = currentMode === 'dream' ? jobs[i-1] : keyword;
-                img.src = `https://images.unsplash.com/photo-1?w=200&h=200&fit=crop&q=80&sig=${i}&${finalTag}`;
-                img.onerror = () => { img.src = `https://loremflickr.com/200/200/${finalTag}?lock=${i}`; };
-                box.appendChild(img);
-            }
-            gridDiv.appendChild(box);
-        }
-    }
-
-    function addNum(n) {
-        if (picked.length >= 6 || picked.includes(n)) return;
-        picked.push(n);
-        updateUI();
-    }
-
-    function pickRandom() {
-        if (picked.length >= 6) return;
-        let r;
-        do { r = Math.floor(Math.random() * 45) + 1; } while (picked.includes(r));
-        picked.push(r);
-        updateUI();
-    }
-
-    function updateUI() {
-        ballDiv.innerHTML = '';
-        picked.forEach(n => {
-            const b = document.createElement('div');
-            b.className = 'ball';
-            b.innerText = n;
-            ballDiv.appendChild(b);
-        });
-    }
-
-    function resetAll() {
-        picked = [];
-        ballDiv.innerHTML = '';
-    }
-
-    // More API functions here:
-    // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/image
-
-    // the link to your model provided by Teachable Machine export panel
-    const URL = "https://teachablemachine.withgoogle.com/models/D4JCk5RcS/";
-
-    let model, webcam, labelContainer, maxPredictions;
-
-    // Load the image model and setup the webcam
-    async function init() {
-        try {
-            const modelURL = URL + "model.json";
-            const metadataURL = URL + "metadata.json";
-
-            // load the model and metadata
-            model = await tmImage.load(modelURL, metadataURL);
-            maxPredictions = model.getTotalClasses();
-
-            // Convenience function to setup a webcam
-            const flip = true; // whether to flip the webcam
-            webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip
-            await webcam.setup(); // request access to the webcam
-            await webcam.play();
-            window.requestAnimationFrame(loop);
-
-            // append elements to the DOM
-            document.getElementById("webcam-container").appendChild(webcam.canvas);
-            labelContainer = document.getElementById("label-container");
-            for (let i = 0; i < maxPredictions; i++) { // and class labels
-                labelContainer.appendChild(document.createElement("div"));
-            }
-        } catch (error) {
-            alert("동물상 테스트를 시작하는 데 문제가 발생했습니다. 웹캠 접근을 허용하거나, 최신 브라우저를 사용 중인지 확인해주세요. 오류: " + error.message);
-            console.error("Error initializing animal face test:", error);
-        }
-    }
-
-    async function loop() {
-        webcam.update(); // update the webcam frame
-        await predict();
-        window.requestAnimationFrame(loop);
-    }
-
-    // run the webcam image through the image model
-    async function predict() {
-        // predict can take in an image, video or canvas html element
-        const prediction = await model.predict(webcam.canvas);
-        for (let i = 0; i < maxPredictions; i++) {
-            const classPrediction =
-                prediction[i].className + ": " + prediction[i].probability.toFixed(2);
-            labelContainer.childNodes[i].innerHTML = classPrediction;
-        }
-    }
-</script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3385745246239215" crossorigin="anonymous"></script>
+    <script src="main.js"></script>
 </body>
 </html>
