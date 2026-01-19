@@ -203,8 +203,20 @@ function render(keywords) {
             } else {
                 finalTag = keywords;
             }
-            img.src = `https://source.unsplash.com/200x200/?${finalTag},face`;
-            img.onerror = () => { img.src = `https://loremflickr.com/200/200/${finalTag}?lock=${i}`; };
+
+            if (currentMode === 'actor') {
+                img.src = `https://loremflickr.com/200/200/${finalTag},portrait?lock=${i}`;
+            } else {
+                img.src = `https://source.unsplash.com/200x200/?${finalTag}`;
+            }
+            
+            img.onerror = () => { 
+                if (currentMode === 'actor') {
+                    img.src = `https://source.unsplash.com/200x200/?${finalTag},face`;
+                } else {
+                    img.src = `https://loremflickr.com/200/200/${finalTag}?lock=${i}`; 
+                }
+            };
             box.appendChild(img);
         }
         gridDiv.appendChild(box);
