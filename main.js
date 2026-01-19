@@ -7,6 +7,9 @@ const ballDiv = document.getElementById('selectedBalls');
 const modeTitle = document.getElementById('modeTitle');
 const searchInput = document.getElementById('customInput');
 
+const actors = ['Tom Hanks', 'Leonardo DiCaprio', 'Brad Pitt', 'Denzel Washington', 'Meryl Streep', 'Scarlett Johansson', 'Robert De Niro', 'Morgan Freeman', 'Julia Roberts', 'Song Kang-ho', 'Lee Byung-hun', 'Choi Min-sik', 'Jeon Do-yeon', 'Youn Yuh-jung', 'Ha Jung-woo', 'Kim Hye-soo', 'Hwang Jung-min', 'Bae Doona', 'Ma Dong-seok', 'Son Ye-jin', 'Gong Yoo', 'Park Seo-joon', 'Kim Go-eun', 'IU', 'Jung Woo-sung', 'Lee Jung-jae', 'Kim Tae-ri', 'Yoo Ah-in', 'Jun Ji-hyun', 'Hyun Bin', 'Jo In-sung', 'Shin Min-a', 'Kang Dong-won', 'Han Hyo-joo', 'So Ji-sub', 'Gong Hyo-jin', 'Park Bo-gum', 'Suzy', 'Kim Soo-hyun', 'Park Shin-hye', 'Lee Min-ho', 'Song Hye-kyo', 'Ji Chang-wook', 'Park Min-young', 'Song Joong-ki'];
+const countries = ['USA', 'South Korea', 'Japan', 'China', 'Germany', 'France', 'UK', 'Canada', 'Australia', 'Brazil', 'India', 'Russia', 'Italy', 'Spain', 'Mexico', 'Indonesia', 'Turkey', 'Saudi Arabia', 'South Africa', 'Argentina', 'Netherlands', 'Switzerland', 'Sweden', 'Poland', 'Belgium', 'Norway', 'Austria', 'Denmark', 'Finland', 'Greece', 'Portugal', 'Ireland', 'New Zealand', 'Singapore', 'Malaysia', 'Thailand', 'Vietnam', 'Philippines', 'Egypt', 'Israel', 'Chile', 'Colombia', 'Peru', 'Nigeria', 'Kenya'];
+const animals = ['Lion', 'Tiger', 'Elephant', 'Giraffe', 'Zebra', 'Monkey', 'Kangaroo', 'Panda', 'Koala', 'Grizzly Bear', 'Polar Bear', 'Wolf', 'Fox', 'Eagle', 'Owl', 'Dolphin', 'Whale', 'Shark', 'Penguin', 'Crocodile', 'Snake', 'Turtle', 'Frog', 'Horse', 'Cow', 'Pig', 'Sheep', 'Goat', 'Chicken', 'Dog', 'Cat', 'Rabbit', 'Hamster', 'Goldfish', 'Butterfly', 'Bee', 'Ant', 'Spider', 'Scorpion', 'Ladybug', 'Dragonfly', 'Seahorse', 'Jellyfish', 'Octopus', 'Starfish'];
 const jobs = ['doctor', 'scientist', 'programmer', 'astronaut', 'pilot', 'chef', 'artist', 'teacher', 'judge', 'architect', 'firefighter', 'police', 'dentist', 'musician', 'athlete', 'lawyer', 'nurse', 'designer', 'farmer', 'baker', 'mechanic', 'photographer', 'journalist', 'diplomat', 'barista', 'soldier', 'professor', 'reporter', 'carpenter', 'diver', 'florist', 'magician', 'painter', 'tailor', 'videographer', 'physicist', 'geologist', 'librarian', 'dancer', 'model', 'actor', 'sailor', 'coach', 'writer', 'dentist'];
 
 const langData = {
@@ -150,8 +153,27 @@ function changeTab(mode, btn) {
     btn.classList.add('active');
     updateModeTitle();
 
-    const keywords = { number: '', dream: 'career', actor: 'portrait,actor,famous', flag: 'national,flag', animal: 'animal,wildlife' };
-    render(keywords[mode]);
+    let keywords;
+    switch(mode) {
+        case 'number':
+            keywords = '';
+            break;
+        case 'dream':
+            keywords = jobs;
+            break;
+        case 'actor':
+            keywords = actors;
+            break;
+        case 'flag':
+            keywords = countries;
+            break;
+        case 'animal':
+            keywords = animals;
+            break;
+        default:
+            keywords = '';
+    }
+    render(keywords);
 }
 
 function handleSearch() {
@@ -163,7 +185,7 @@ function handleSearch() {
     render(val);
 }
 
-function render(keyword) {
+function render(keywords) {
     if (!gridDiv) return;
     gridDiv.innerHTML = '';
     for (let i = 1; i <= 45; i++) {
@@ -175,8 +197,13 @@ function render(keyword) {
             box.innerHTML = `<div class="num-label">${i}</div>`;
         } else {
             const img = document.createElement('img');
-            let finalTag = currentMode === 'dream' ? jobs[i - 1] : keyword;
-            img.src = `https://images.unsplash.com/photo-1?w=200&h=200&fit=crop&q=80&sig=${i}&${finalTag}`;
+            let finalTag = '';
+            if (Array.isArray(keywords)) {
+                finalTag = keywords[i-1];
+            } else {
+                finalTag = keywords;
+            }
+            img.src = `https://source.unsplash.com/200x200/?${finalTag},face`;
             img.onerror = () => { img.src = `https://loremflickr.com/200/200/${finalTag}?lock=${i}`; };
             box.appendChild(img);
         }
