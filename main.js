@@ -180,6 +180,23 @@ if(searchInput) {
     searchInput.addEventListener("keyup", (e) => { if (e.key === "Enter") handleSearch(); });
 }
 
+function setFavicon() {
+    let link = document.querySelector("link[rel='icon']");
+    if (!link) {
+        link = document.createElement('link');
+        link.rel = 'icon';
+        document.head.appendChild(link);
+    }
+    const canvas = document.createElement('canvas');
+    canvas.width = 32;
+    canvas.height = 32;
+    const ctx = canvas.getContext('2d');
+    ctx.font = '28px serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('🍀', 16, 16);
+    link.href = canvas.toDataURL('image/png');
+}
 
 window.onload = () => {
     const page = window.location.pathname.split("/").pop();
@@ -191,6 +208,7 @@ window.onload = () => {
     // Set initial language based on browser language
     const userLang = navigator.language || navigator.userLanguage; 
     setLanguage(userLang.startsWith('en') ? 'en' : 'ko');
+    setFavicon();
 };
 
 function changeTab(mode, btn) {
