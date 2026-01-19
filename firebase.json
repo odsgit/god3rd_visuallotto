@@ -1,0 +1,36 @@
+{
+  "hosting": {
+    "cleanUrls": true,
+    "trailingSlash": false,
+    "redirects": [
+      {
+        "source": "/index.html",
+        "destination": "/",
+        "type": 301
+      }
+    ],
+    "headers": [
+      {
+        "source": "**",
+        "headers": [
+          {
+            "key": "X-Content-Type-Options",
+            "value": "nosniff"
+          },
+          {
+            "key": "X-Frame-Options",
+            "value": "SAMEORIGIN"
+          },
+          {
+            "key": "X-XSS-Protection",
+            "value": "1; mode=block"
+          },
+          {
+            "key": "Content-Security-Policy",
+            "value": "script-src 'self' https://www.googletagmanager.com https://www.clarity.ms https://cdn.jsdelivr.net https://pagead2.googlesyndication.com; frame-src https://*.firebaseapp.com; object-src 'none'; base-uri 'self';"
+          }
+        ]
+      }
+    ]
+  }
+}

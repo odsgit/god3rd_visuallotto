@@ -2,14 +2,44 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Global Visual Lotto Picker (1-45)</title>
-    <meta name="google-adsense-account" content="ca-pub-3385745246239215">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3385745246239215"
-     crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>비주얼 로또 번호 생성기 - 꿈, 배우, 동물, 국기 번호</title>
+    <meta name="description" content="비주얼 로또 번호 생성기는 꿈, 배우, 동물, 국기 등 다양한 테마를 활용하여 독특하고 재미있는 방식으로 로또 번호를 생성합니다. 지금 바로 행운의 번호를 받아보세요!">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://bigforest.work/">
+    <meta property="og:title" content="비주얼 로또 번호 생성기 - 꿈, 배우, 동물, 국기 번호">
+    <meta property="og:description" content="꿈, 배우, 동물, 국기 등 다양한 테마를 활용하여 독특하고 재미있는 방식으로 로또 번호를 생성합니다.">
+    <meta property="og:image" content="https://bigforest.work/og-image.jpg">
+    <meta property="og:locale" content="ko_KR">
 
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://bigforest.work/">
+    <meta property="twitter:title" content="비주얼 로또 번호 생성기 - 꿈, 배우, 동물, 국기 번호">
+    <meta property="twitter:description" content="꿈, 배우, 동물, 국기 등 다양한 테마를 활용하여 독특하고 재미있는 방식으로 로또 번호를 생성합니다.">
+    <meta property="twitter:image" content="https://bigforest.work/og-image.jpg">
+
+    <link rel="canonical" href="https://bigforest.work/">
+    <link rel="stylesheet" href="style.css">
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "비주얼 로또 번호 생성기",
+      "url": "https://bigforest.work/",
+      "description": "꿈, 배우, 동물, 국기 등 다양한 테마를 활용하여 독특하고 재미있는 방식으로 로또 번호를 생성합니다.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://bigforest.work/#search={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-E2LZG9LFRV"></script>
     <script>
@@ -31,17 +61,20 @@
 <body>
 
     <div class="top-bar">
-        <button class="util-btn" onclick="toggleDarkMode()" id="modeBtn">🌙 Dark Mode</button>
-        <button class="util-btn" onclick="toggleLanguage()" id="langBtn"></button>
+        <button class="util-btn" onclick="toggleDarkMode()" id="modeBtn">🌙 다크 모드</button>
     </div>
 
+    <header>
+        <h1>비주얼 로또 번호 생성기</h1>
+    </header>
+
     <div class="main-nav-btns">
-        <a href="index.html" class="tab-button active" data-lang-key="lottoPickerTab"></a>
-        <a href="animal-face-test.html" class="tab-button" data-lang-key="animalTestTab"></a>
-        <a href="contact.html" class="tab-button" data-lang-key="contactUsTab"></a>
-        <a href="lotto-info.html" class="tab-button" data-lang-key="lottoInfoTab"></a>
-        <a href="about-us.html" class="tab-button" data-lang-key="aboutUsTab"></a>
-        <a href="privacy-policy.html" class="tab-button" data-lang-key="privacyPolicyTab"></a>
+        <a href="index.html" class="tab-button active" data-lang-key="lottoPickerTab">로또 번호 생성</a>
+        <a href="animal-face-test.html" class="tab-button" data-lang-key="animalTestTab">동물상 테스트</a>
+        <a href="contact.html" class="tab-button" data-lang-key="contactUsTab">문의하기</a>
+        <a href="lotto-info.html" class="tab-button" data-lang-key="lottoInfoTab">로또 정보</a>
+        <a href="about-us.html" class="tab-button" data-lang-key="aboutUsTab">소개</a>
+        <a href="privacy-policy.html" class="tab-button" data-lang-key="privacyPolicyTab">개인정보처리방침</a>
     </div>
 
     <div id="main-content-wrapper">
@@ -75,9 +108,13 @@
 
     <footer>
         <p>&copy; 2026 Visual Lotto Picker. All Rights Reserved.</p>
-        <p><a href="about-us.html" data-lang-key="aboutUsTab"></a> | <a href="privacy-policy.html" data-lang-key="privacyPolicyTab"></a> | <a href="contact.html" data-lang-key="contactUsTab"></a></p>
+        <p><a href="about-us.html" data-lang-key="aboutUsTab">소개</a> | <a href="privacy-policy.html" data-lang-key="privacyPolicyTab">개인정보처리방침</a> | <a href="contact.html" data-lang-key="contactUsTab">문의하기</a></p>
     </footer>
     
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3385745246239215"
+     crossorigin="anonymous"></script>
     <script src="main.js"></script>
 </body>
 </html>
