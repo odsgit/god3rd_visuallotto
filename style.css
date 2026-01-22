@@ -76,6 +76,9 @@ input { padding: 12px; width: 250px; border: 2px solid var(--border-color); bord
 .result-panel { margin-top: 30px; width: 100%; max-width: 600px; text-align: center; padding: 25px; background: var(--result-panel); border-radius: 20px; color: white; margin-left: auto; margin-right: auto; }
 .balls { display: flex; justify-content: center; gap: 12px; margin: 20px 0; min-height: 55px; }
 .ball { width: 55px; height: 55px; line-height: 55px; border-radius: 50%; background: linear-gradient(135deg, #ffcc00, #ff9500); color: #000; font-weight: bold; font-size: 1.4rem; }
+body.dark-mode .ball {
+    color: black;
+}
 
 .ball.powerball {
     background: linear-gradient(135deg, #ff3b30, #e52e2e);
