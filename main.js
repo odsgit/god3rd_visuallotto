@@ -175,10 +175,12 @@ function showSection(sectionId, element) {
     document.getElementById(sectionId).style.display = 'block';
 
     if(element) {
-        document.querySelectorAll('.tab-button').forEach(btn => {
+        document.querySelectorAll('.nav-btns button').forEach(btn => {
             btn.classList.remove('active');
         });
-        element.classList.add('active');
+        if(element.classList.contains('util-btn') === false) {
+            element.classList.add('active');
+        }
     }
 }
 
