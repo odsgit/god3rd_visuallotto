@@ -37,7 +37,6 @@ input { padding: 12px; width: 250px; border: 2px solid var(--border-color); bord
 .grid {
     display: grid;
     grid-template-columns: repeat(9, 1fr); /* 9열 */
-    grid-template-rows: repeat(5, 1fr);    /* 5행 */
     gap: 10px;
     width: 100%;
     max-width: 900px;
@@ -47,14 +46,51 @@ input { padding: 12px; width: 250px; border: 2px solid var(--border-color); bord
     box-shadow: 0 10px 40px rgba(0,0,0,0.08);
 }
 
+#powerball-grid {
+    grid-template-columns: repeat(9, 1fr);
+}
+
 .item { aspect-ratio: 1/1; border-radius: 10px; overflow: hidden; cursor: pointer; position: relative; border: 3px solid transparent; background: #8882; transition: 0.2s; }
 .item:hover { transform: scale(1.05); border-color: #ff3b30; z-index: 5; }
 .item img { width: 100%; height: 100%; object-fit: cover; }
 .item .num-label { height: 100%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 800; }
+.item .ball {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff; /* White background for white balls */
+    color: var(--text);
+    font-weight: bold;
+    font-size: 1.4rem;
+    border: 1px solid #ccc;
+}
+.item .ball.powerball {
+    background: linear-gradient(135deg, #ff3b30, #e52e2e);
+    color: white;
+}
+
 
 .result-panel { margin-top: 30px; width: 100%; max-width: 600px; text-align: center; padding: 25px; background: var(--result-panel); border-radius: 20px; color: white; margin-left: auto; margin-right: auto; }
 .balls { display: flex; justify-content: center; gap: 12px; margin: 20px 0; min-height: 55px; }
 .ball { width: 55px; height: 55px; line-height: 55px; border-radius: 50%; background: linear-gradient(135deg, #ffcc00, #ff9500); color: #000; font-weight: bold; font-size: 1.4rem; }
+
+.ball.powerball {
+    background: linear-gradient(135deg, #ff3b30, #e52e2e);
+    color: white;
+}
+.ball.white-ball {
+    background: #ffffff;
+    color: var(--text);
+    border: 1px solid #ccc;
+}
+
+
+#powerball-grid-container {
+    margin-top: 20px;
+}
 
 .util-btn { padding: 8px 15px; border-radius: 8px; border: 1px solid var(--border-color); cursor: pointer; font-size: 13px; background: var(--card-bg); color: var(--text); font-weight: bold; }
 .reset-btn { background: #ff3b30; color: white; border: none; padding: 12px 40px; border-radius: 10px; cursor: pointer; font-weight: bold; }
@@ -170,50 +206,42 @@ footer a {
     text-decoration: none;
 }
 
-#president-test-section .content-section {
-    text-align: center;
-}
 
-.result-images {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
+
+
+
+
+
+
+
+
+
+
+
+table {
+    width: 100%;
+    border-collapse: collapse;
     margin: 20px 0;
 }
 
-.result-images > div {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+th, td {
+    border: 1px solid var(--border-color);
+    padding: 8px;
+    text-align: left;
 }
 
-#user-face-canvas, #president-image {
-    border: 3px solid var(--primary);
-    border-radius: 15px;
-}
-
-.lotto-results {
-    margin: 30px 0;
-}
-
-.quote-container {
-    padding: 20px;
-    background: var(--result-panel);
+th {
+    background-color: var(--result-panel);
     color: white;
-    border-radius: 15px;
-    font-style: italic;
 }
+
 
 @media screen and (max-width: 768px) {
     body {
         padding: 10px;
     }
 
-    .main-nav {
-        flex-direction: column;
-    }
-
-    .top-bar, .controls, .grid, .result-panel, .contact-form-container, .content-section, footer, .main-nav {
+    .top-bar, .controls, .grid, .result-panel, .contact-form-container, .content-section, footer {
         max-width: 100%;
         padding: 15px;
         border-radius: 10px;

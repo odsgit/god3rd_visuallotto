@@ -24,21 +24,7 @@ const slotSymbols = ['🍒', '🍋', '🍊', '🍇', '🍉', '🍓', '🔔', 'BA
 const animals = ['Lion', 'Tiger', 'Elephant', 'Giraffe', 'Zebra', 'Monkey', 'Kangaroo', 'Panda', 'Koala', 'Grizzly Bear', 'Polar Bear', 'Wolf', 'Fox', 'Eagle', 'Owl', 'Dolphin', 'Whale', 'Shark', 'Penguin', 'Crocodile', 'Snake', 'Turtle', 'Frog', 'Horse', 'Cow', 'Pig', 'Sheep', 'Goat', 'Chicken', 'Dog', 'Cat', 'Rabbit', 'Hamster', 'Goldfish', 'Butterfly', 'Bee', 'Ant', 'Spider', 'Scorpion', 'Ladybug', 'Dragonfly', 'Seahorse', 'Jellyfish', 'Octopus', 'Starfish'];
 const jobs = ['doctor', 'scientist', 'programmer', 'astronaut', 'pilot', 'chef', 'artist', 'teacher', 'judge', 'architect', 'firefighter', 'police', 'dentist', 'musician', 'athlete', 'lawyer', 'nurse', 'designer', 'farmer', 'baker', 'mechanic', 'photographer', 'journalist', 'diplomat', 'barista', 'soldier', 'professor', 'reporter', 'carpenter', 'diver', 'florist', 'magician', 'painter', 'tailor', 'videographer', 'physicist', 'geologist', 'librarian', 'dancer', 'model', 'actor', 'sailor', 'coach', 'writer', 'dentist'];
 
-const presidents = [
-    { name: "George Washington", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Gilbert_Stuart_Williamstown_Portrait_of_George_Washington.jpg/320px-Gilbert_Stuart_Williamstown_Portrait_of_George_Washington.jpg" },
-    { name: "John Adams", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/John_Adams_by_John_Trumbull%2C_1793.jpg/320px-John_Adams_by_John_Trumbull%2C_1793.jpg"},
-    { name: "Abraham Lincoln", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/a/ab/Abraham_Lincoln_O-77_matte_collodion_print.jpg"},
-    { name: "Donald Trump", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/5/56/Donald_Trump_official_portrait.jpg"},
-    { name: "Joe Biden", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/6/68/Joe_Biden_presidential_portrait.jpg"}
-];
 
-const quotes = [
-    "The only way to do great work is to love what you do. - Steve Jobs",
-    "The future belongs to those who believe in the beauty of their dreams. - Eleanor Roosevelt",
-    "It is during our darkest moments that we must focus to see the light. - Aristotle",
-    "Whoever is happy will make others happy too. - Anne Frank",
-    "Do not go where the path may lead, go instead where there is no path and leave a trail. - Ralph Waldo Emerson"
-];
 
 const langData = {
     ko: {
@@ -46,7 +32,7 @@ const langData = {
         search: "검색",
         reset: "초기화",
         placeholder: "검색어 입력 (Enter)",
-        numMsg: "숫자를 직접 선택하세요!",
+        numMsg: "",
         randMsg: "사진을 클릭하면 랜덤 번호 추출!",
         animalTestTitle: "동물상 테스트",
         startBtn: "시작",
@@ -81,7 +67,7 @@ const langData = {
         search: "Search",
         reset: "Reset",
         placeholder: "Enter keyword (Enter)",
-        numMsg: "Click a number to pick!",
+        numMsg: "",
         randMsg: "Click a photo for a random number!",
         animalTestTitle: "Animal Face Test",
         startBtn: "Start",
@@ -114,10 +100,13 @@ const langData = {
 };
 
 let picked = [];
+let pickedPowerball = [];
+let gameMode = 'lotto'; // 'lotto' or 'powerball'
 let currentMode = 'number';
 let isEnglish = false;
 
-const gridDiv = document.getElementById('grid');
+const gridDiv = document.getElementById('lotto-grid');
+const powerballGridDiv = document.getElementById('powerball-grid');
 const ballDiv = document.getElementById('selectedBalls');
 const modeTitle = document.getElementById('modeTitle');
 const searchInput = document.getElementById('customInput');
@@ -126,15 +115,22 @@ const searchInput = document.getElementById('customInput');
 const URL = "https://teachablemachine.withgoogle.com/models/D4JCk5RcS/";
 let model, webcam, labelContainer, maxPredictions;
 
-// For president face test
-const presidentModelURL = "https://teachablemachine.withgoogle.com/models/A9g4b7fJm/"; 
-let presidentModel, presidentWebcam;
+
 
 
 function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
     const isDark = document.body.classList.contains('dark-mode');
     document.getElementById('modeBtn').innerText = isDark ? "☀️ Light" : "🌙 Dark";
+}
+
+function setGameMode(mode) {
+    gameMode = mode;
+    document.getElementById('lottoBtn').classList.toggle('active', mode === 'lotto');
+    document.getElementById('powerballBtn').classList.toggle('active', mode === 'powerball');
+    showSection('lotto-picker-section', document.getElementById(mode === 'lotto' ? 'lottoBtn' : 'powerballBtn'));
+    changeTab('number', document.querySelector('.nav-btns button'));
+    resetAll();
 }
 
 function setLanguage(lang) {
@@ -175,7 +171,7 @@ function showSection(sectionId, element) {
     document.getElementById(sectionId).style.display = 'block';
 
     if(element) {
-        document.querySelectorAll('.nav-btns button').forEach(btn => {
+        document.querySelectorAll('.nav-btns button, .top-bar button').forEach(btn => {
             btn.classList.remove('active');
         });
         if(element.classList.contains('util-btn') === false) {
@@ -192,10 +188,8 @@ if(searchInput) {
 window.onload = () => {
     const userLang = navigator.language || navigator.userLanguage;
     setLanguage(userLang.startsWith('en') ? 'en' : 'ko');
-    showSection('lotto-picker-section');
-    if (document.querySelector('.nav-btns button')) {
-        changeTab('number', document.querySelector('.nav-btns button'));
-    }
+    showSection('lotto-picker-section', document.querySelector('.nav-btns button'));
+    document.getElementById('lottoBtn').classList.add('active');
 };
 
 function changeTab(mode, btn) {
@@ -249,25 +243,36 @@ function handleSearch() {
 async function render(keywords) {
     if (!gridDiv) return;
     gridDiv.innerHTML = '';
+    powerballGridDiv.innerHTML = '';
+    document.getElementById('powerball-grid-container').style.display = 'none';
 
     if (currentMode === 'number') {
-        for (let i = 1; i <= 45; i++) {
-            const box = document.createElement('div');
-            box.className = 'item';
-            box.innerHTML = `<div class="num-label">${i}</div>`;
-            box.onclick = () => addNum(i);
-            gridDiv.appendChild(box);
+        if (gameMode === 'lotto') {
+            for (let i = 1; i <= 45; i++) {
+                const box = document.createElement('div');
+                box.className = 'item';
+                box.innerHTML = `<div class="ball">${i}</div>`;
+                box.onclick = () => addNum(i);
+                gridDiv.appendChild(box);
+            }
+        } else { // powerball
+            document.getElementById('powerball-grid-container').style.display = 'block';
+            for (let i = 1; i <= 69; i++) {
+                const box = document.createElement('div');
+                box.className = 'item';
+                box.innerHTML = `<div class="ball white-ball">${i}</div>`;
+                box.onclick = () => addNum(i, false);
+                gridDiv.appendChild(box);
+            }
+            for (let i = 1; i <= 26; i++) {
+                const box = document.createElement('div');
+                box.className = 'item powerball';
+                box.innerHTML = `<div class="ball powerball">${i}</div>`;
+                box.onclick = () => addNum(i, true);
+                powerballGridDiv.appendChild(box);
+            }
         }
     } else if (currentMode === 'fruit') {
-        let usePixabay = true;
-        if (PIXABAY_API_KEY === 'YOUR_PIXABAY_API_KEY') {
-            if (!localStorage.getItem('pixabayApiKeyWarned')) {
-                alert('Please replace "YOUR_PIXABAY_API_KEY" in main.js with your actual Pixabay API key for dynamic fruit images. Falling back to default images.');
-                localStorage.setItem('pixabayApiKeyWarned', 'true');
-            }
-            usePixabay = false;
-        }
-
         for (let i = 0; i < 45; i++) {
             const box = document.createElement('div');
             box.className = 'item';
@@ -280,22 +285,7 @@ async function render(keywords) {
             };
 
             const img = document.createElement('img');
-            let imageUrlToUse = `https://loremflickr.com/200/200/${finalTag}?lock=${i}`;
-
-            if (usePixabay) {
-                try {
-                    const response = await fetch(`https://pixabay.com/api/?key=${PIXABAY_API_KEY}&q=${encodeURIComponent(finalTag)}&image_type=photo&per_page=3`);
-                    const data = await response.json();
-                    if (data.hits.length > 0) {
-                        imageUrlToUse = data.hits[0].webformatURL;
-                    } else {
-                        console.warn(`No Pixabay images found for "${finalTag}". Using fallback.`);
-                    }
-                } catch (error) {
-                    console.error('Error fetching from Pixabay:', error);
-                }
-            }
-            img.src = imageUrlToUse;
+            img.src = `https://loremflickr.com/200/200/${finalTag}?lock=${i}`; 
             
             img.onerror = () => { 
                 img.src = `https://loremflickr.com/200/200/${finalTag}?lock=${i}`; 
@@ -335,33 +325,72 @@ async function render(keywords) {
     }
 }
 
-function addNum(n) {
-    if (picked.length >= 6 || picked.includes(n)) return;
-    picked.push(n);
+function addNum(n, isPowerball = false) {
+    if (gameMode === 'lotto') {
+        if (picked.length >= 6 || picked.includes(n)) return;
+        picked.push(n);
+    } else { // powerball
+        if(isPowerball) {
+            if (pickedPowerball.length >= 1) return;
+            pickedPowerball = [n];
+        } else {
+            if (picked.length >= 5 || picked.includes(n)) return;
+            picked.push(n);
+        }
+    }
     updateUI();
 }
 
 function pickRandom() {
-    if (picked.length >= 6) return;
-    let r;
-    do { r = Math.floor(Math.random() * 45) + 1; } while (picked.includes(r));
-    picked.push(r);
+    if (gameMode === 'lotto') {
+        if (picked.length >= 6) return;
+        let r;
+        do { r = Math.floor(Math.random() * 45) + 1; } while (picked.includes(r));
+        picked.push(r);
+    } else { // powerball
+        if (picked.length >= 5 && pickedPowerball.length >= 1) return;
+        if(picked.length < 5) {
+            let r;
+            do { r = Math.floor(Math.random() * 69) + 1; } while (picked.includes(r));
+            picked.push(r);
+        }
+        if(pickedPowerball.length < 1) {
+            pickedPowerball = [Math.floor(Math.random() * 26) + 1];
+        }
+    }
     updateUI();
 }
 
 function updateUI() {
     if (!ballDiv) return;
     ballDiv.innerHTML = '';
-    picked.forEach(n => {
-        const b = document.createElement('div');
-        b.className = 'ball';
-        b.innerText = n;
-        ballDiv.appendChild(b);
-    });
+
+    if (gameMode === 'lotto') {
+        picked.sort((a,b) => a - b).forEach(n => {
+            const b = document.createElement('div');
+            b.className = 'ball';
+            b.innerText = n;
+            ballDiv.appendChild(b);
+        });
+    } else { // powerball
+        picked.sort((a,b) => a - b).forEach(n => {
+            const b = document.createElement('div');
+            b.className = 'ball white-ball';
+            b.innerText = n;
+            ballDiv.appendChild(b);
+        });
+        if(pickedPowerball.length > 0) {
+            const b = document.createElement('div');
+            b.className = 'ball powerball';
+            b.innerText = pickedPowerball[0];
+            ballDiv.appendChild(b);
+        }
+    }
 }
 
 function resetAll() {
     picked = [];
+    pickedPowerball = [];
     if(ballDiv) ballDiv.innerHTML = '';
 }
 
@@ -403,95 +432,4 @@ async function predict() {
             labelContainer.childNodes[i].innerHTML = classPrediction;
         }
     }
-}
-
-// --- President Test Functions ---
-
-async function startPresidentTest() {
-    showSection('president-test-section');
-    const modelURL = presidentModelURL + "model.json";
-    const metadataURL = presidentModelURL + "metadata.json";
-    try {
-        presidentModel = await tmImage.load(modelURL, metadataURL);
-        const flip = true;
-        presidentWebcam = new tmImage.Webcam(200, 200, flip);
-        await presidentWebcam.setup(); 
-        await presidentWebcam.play();
-        const webcamContainer = document.getElementById("president-webcam-container");
-        webcamContainer.innerHTML = '';
-        webcamContainer.appendChild(presidentWebcam.canvas);
-    } catch(e) {
-        console.error(e);
-        alert("Could not load president model. Please provide a valid model URL.");
-    }
-}
-
-async function predictPresident() {
-    if (!presidentModel) {
-        alert("Please start the test first.");
-        return;
-    }
-    const canvas = document.getElementById('user-face-canvas');
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(presidentWebcam.canvas, 0, 0, 200, 200);
-
-    const prediction = await presidentModel.predict(presidentWebcam.canvas);
-    prediction.sort((a, b) => b.probability - a.probability);
-
-    const president = presidents.find(p => p.name === prediction[0].className);
-    
-    if (president) {
-        const lottoNumbers = generateLottoNumbers(prediction);
-        const powerballNumbers = generateLottoNumbers(prediction, true);
-        const quote = quotes[Math.floor(Math.random() * quotes.length)];
-        
-        displayPresidentResult(president, lottoNumbers, powerballNumbers, quote);
-    } else {
-        alert("Could not recognize a president in the image.");
-    }
-}
-
-function generateLottoNumbers(prediction, isPowerball = false) {
-    const numbers = new Set();
-    const maxNum = isPowerball ? 69 : 45;
-    const count = isPowerball ? 5 : 6;
-
-    while (numbers.size < count) {
-        const seed = prediction.reduce((acc, p) => acc + p.probability, 0) + Math.random();
-        const num = Math.floor(seed * maxNum) + 1;
-        if (!numbers.has(num)) {
-            numbers.add(num);
-        }
-    }
-
-    const finalNumbers = Array.from(numbers).sort((a, b) => a - b);
-    if (isPowerball) {
-        finalNumbers.push(Math.floor(Math.random() * 26) + 1);
-    }
-    return finalNumbers;
-}
-
-function displayPresidentResult(president, lottoNumbers, powerballNumbers, quote) {
-    document.getElementById('president-image').src = president.imageUrl;
-    
-    const lottoDiv = document.getElementById('lotto-numbers');
-    lottoDiv.innerHTML = '';
-    lottoNumbers.forEach(n => {
-        const ball = document.createElement('div');
-        ball.className = 'ball';
-        ball.innerText = n;
-        lottoDiv.appendChild(ball);
-    });
-
-    const powerballDiv = document.getElementById('powerball-numbers');
-    powerballDiv.innerHTML = '';
-    powerballNumbers.forEach(n => {
-        const ball = document.createElement('div');
-        ball.className = 'ball';
-        ball.innerText = n;
-        powerballDiv.appendChild(ball);
-    });
-
-    document.getElementById('inspirational-quote').innerText = quote;
-    document.getElementById('president-result-container').style.display = 'block';
 }
