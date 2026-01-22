@@ -31,7 +31,12 @@ body {
 .nav-btns button.active { background: var(--primary); color: white; border-color: var(--primary); }
 
 .search-group { display: flex; justify-content: center; gap: 10px; padding-top: 15px; border-top: 1px solid var(--border-color); }
-input { padding: 12px; width: 250px; border: 2px solid var(--border-color); border-radius: 10px; outline: none; background: var(--card-bg); color: var(--text); }
+input { padding: 12px; width: 250px; border: 2px solid var(--border-color); border-radius: 10px; background: var(--card-bg); color: var(--text); }
+/* Custom focus styles */
+input:focus, textarea:focus, button:focus, a:focus {
+    outline: 2px solid var(--primary); /* Primary color outline for focus */
+    outline-offset: 2px; /* Offset the outline slightly */
+}
 
 /* 5*9 그리드 설정 */
 .grid {
