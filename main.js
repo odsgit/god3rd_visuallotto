@@ -1,20 +1,48 @@
-let picked = [];
-let currentMode = 'number';
-let isEnglish = false;
+const PIXABAY_API_KEY = 'YOUR_PIXABAY_API_KEY'; // IMPORTANT: Replace with your actual Pixabay API key
 
-const gridDiv = document.getElementById('grid');
-const ballDiv = document.getElementById('selectedBalls');
-const modeTitle = document.getElementById('modeTitle');
-const searchInput = document.getElementById('customInput');
-
-const actors = ['Tom Hanks', 'Leonardo DiCaprio', 'Brad Pitt', 'Denzel Washington', 'Meryl Streep', 'Scarlett Johansson', 'Robert De Niro', 'Morgan Freeman', 'Julia Roberts', 'Song Kang-ho', 'Lee Byung-hun', 'Choi Min-sik', 'Jeon Do-yeon', 'Youn Yuh-jung', 'Ha Jung-woo', 'Kim Hye-soo', 'Hwang Jung-min', 'Bae Doona', 'Ma Dong-seok', 'Son Ye-jin', 'Gong Yoo', 'Park Seo-joon', 'Kim Go-eun', 'IU', 'Jung Woo-sung', 'Lee Jung-jae', 'Kim Tae-ri', 'Yoo Ah-in', 'Jun Ji-hyun', 'Hyun Bin', 'Jo In-sung', 'Shin Min-a', 'Kang Dong-won', 'Han Hyo-joo', 'So Ji-sub', 'Gong Hyo-jin', 'Park Bo-gum', 'Suzy', 'Kim Soo-hyun', 'Park Shin-hye', 'Lee Min-ho', 'Song Hye-kyo', 'Ji Chang-wook', 'Park Min-young', 'Song Joong-ki'];
-const countries = ['USA', 'South Korea', 'Japan', 'China', 'Germany', 'France', 'UK', 'Canada', 'Australia', 'Brazil', 'India', 'Russia', 'Italy', 'Spain', 'Mexico', 'Indonesia', 'Turkey', 'Saudi Arabia', 'South Africa', 'Argentina', 'Netherlands', 'Switzerland', 'Sweden', 'Poland', 'Belgium', 'Norway', 'Austria', 'Denmark', 'Finland', 'Greece', 'Portugal', 'Ireland', 'New Zealand', 'Singapore', 'Malaysia', 'Thailand', 'Vietnam', 'Philippines', 'Egypt', 'Israel', 'Chile', 'Colombia', 'Peru', 'Nigeria', 'Kenya'];
+const fruits = [
+    { "name": "Apple" },
+    { "name": "Banana" },
+    { "name": "Orange" },
+    { "name": "Grape" },
+    { "name": "Strawberry" },
+    { "name": "Watermelon" },
+    { "name": "Pineapple" },
+    { "name": "Mango" },
+    { "name": "Peach" },
+    { "name": "Cherry" },
+    { "name": "Blueberry" },
+    { "name": "Raspberry" },
+    { "name": "Kiwi" },
+    { "name": "Lemon" },
+    { "name": "Lime" },
+    { "name": "Coconut" },
+    { "name": "Pomegranate" },
+    { "name": "Avocado" }
+];
+const slotSymbols = ['🍒', '🍋', '🍊', '🍇', '🍉', '🍓', '🔔', 'BAR', '7️⃣'];
 const animals = ['Lion', 'Tiger', 'Elephant', 'Giraffe', 'Zebra', 'Monkey', 'Kangaroo', 'Panda', 'Koala', 'Grizzly Bear', 'Polar Bear', 'Wolf', 'Fox', 'Eagle', 'Owl', 'Dolphin', 'Whale', 'Shark', 'Penguin', 'Crocodile', 'Snake', 'Turtle', 'Frog', 'Horse', 'Cow', 'Pig', 'Sheep', 'Goat', 'Chicken', 'Dog', 'Cat', 'Rabbit', 'Hamster', 'Goldfish', 'Butterfly', 'Bee', 'Ant', 'Spider', 'Scorpion', 'Ladybug', 'Dragonfly', 'Seahorse', 'Jellyfish', 'Octopus', 'Starfish'];
 const jobs = ['doctor', 'scientist', 'programmer', 'astronaut', 'pilot', 'chef', 'artist', 'teacher', 'judge', 'architect', 'firefighter', 'police', 'dentist', 'musician', 'athlete', 'lawyer', 'nurse', 'designer', 'farmer', 'baker', 'mechanic', 'photographer', 'journalist', 'diplomat', 'barista', 'soldier', 'professor', 'reporter', 'carpenter', 'diver', 'florist', 'magician', 'painter', 'tailor', 'videographer', 'physicist', 'geologist', 'librarian', 'dancer', 'model', 'actor', 'sailor', 'coach', 'writer', 'dentist'];
 
+const presidents = [
+    { name: "George Washington", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Gilbert_Stuart_Williamstown_Portrait_of_George_Washington.jpg/320px-Gilbert_Stuart_Williamstown_Portrait_of_George_Washington.jpg" },
+    { name: "John Adams", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/John_Adams_by_John_Trumbull%2C_1793.jpg/320px-John_Adams_by_John_Trumbull%2C_1793.jpg"},
+    { name: "Abraham Lincoln", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/a/ab/Abraham_Lincoln_O-77_matte_collodion_print.jpg"},
+    { name: "Donald Trump", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/5/56/Donald_Trump_official_portrait.jpg"},
+    { name: "Joe Biden", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/6/68/Joe_Biden_presidential_portrait.jpg"}
+];
+
+const quotes = [
+    "The only way to do great work is to love what you do. - Steve Jobs",
+    "The future belongs to those who believe in the beauty of their dreams. - Eleanor Roosevelt",
+    "It is during our darkest moments that we must focus to see the light. - Aristotle",
+    "Whoever is happy will make others happy too. - Anne Frank",
+    "Do not go where the path may lead, go instead where there is no path and leave a trail. - Ralph Waldo Emerson"
+];
+
 const langData = {
     ko: {
-        title: "🍀 비주얼 로또 픽커 (1-45)",
+        title: "🍀 비주얼 로또/파워볼 픽커",
         search: "검색",
         reset: "초기화",
         placeholder: "검색어 입력 (Enter)",
@@ -35,8 +63,8 @@ const langData = {
         privacyTab: "개인정보 처리방침",
         numberTab: "숫자",
         dreamTab: "꿈 (직업)",
-        actorTab: "영화배우",
-        flagTab: "나라(국기)",
+        fruitTab: "과일",
+        slotTab: "슬롯머신",
         animalTab: "동물",
         lottoInfoTitle: "로또 재미있는 사실 & 팁",
         lottoMathTitle: "로또 번호 뒤에 숨겨진 놀라운 수학",
@@ -49,7 +77,7 @@ const langData = {
         privacyContent: "저희는 사용자의 개인정보 보호를 최우선으로 생각합니다. 저희 웹사이트에서 수집되는 모든 정보는 사용자 동의 하에 투명하게 처리되며, 서비스 제공 및 개선 목적으로만 사용됩니다. 개인정보 처리 방침을 자세히 읽어보시고 궁금한 점이 있으시면 언제든지 문의해주세요."
     },
     en: {
-        title: "🍀 Visual Lotto Picker (1-45)",
+        title: "🍀 Visual Lotto/Powerball Picker",
         search: "Search",
         reset: "Reset",
         placeholder: "Enter keyword (Enter)",
@@ -70,8 +98,8 @@ const langData = {
         privacyTab: "Privacy Policy",
         numberTab: "Number",
         dreamTab: "Dream (Career)",
-        actorTab: "Actors",
-        flagTab: "Flags",
+        fruitTab: "Fruits",
+        slotTab: "Slot Machine",
         animalTab: "Animals",
         lottoInfoTitle: "Lotto Fun Facts & Tips",
         lottoMathTitle: "The Surprising Math Behind Lotto Numbers",
@@ -85,10 +113,28 @@ const langData = {
     }
 };
 
+let picked = [];
+let currentMode = 'number';
+let isEnglish = false;
+
+const gridDiv = document.getElementById('grid');
+const ballDiv = document.getElementById('selectedBalls');
+const modeTitle = document.getElementById('modeTitle');
+const searchInput = document.getElementById('customInput');
+
+// For animal face test
+const URL = "https://teachablemachine.withgoogle.com/models/D4JCk5RcS/";
+let model, webcam, labelContainer, maxPredictions;
+
+// For president face test
+const presidentModelURL = "https://teachablemachine.withgoogle.com/models/A9g4b7fJm/"; 
+let presidentModel, presidentWebcam;
+
+
 function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
     const isDark = document.body.classList.contains('dark-mode');
-    document.getElementById('modeBtn').innerText = isDark ? "☀️ Light Mode" : "🌙 Dark Mode";
+    document.getElementById('modeBtn').innerText = isDark ? "☀️ Light" : "🌙 Dark";
 }
 
 function setLanguage(lang) {
@@ -105,13 +151,14 @@ function setLanguage(lang) {
             }
         }
     });
+
     updateModeTitle();
+    document.getElementById('langBtn').innerText = isEnglish ? "🇰🇷" : "🇺🇸";
 }
 
 function toggleLanguage() {
     const newLang = isEnglish ? 'ko' : 'en';
     setLanguage(newLang);
-    document.getElementById('langBtn').innerText = isEnglish ? "🇰🇷 한국어" : "🇺🇸 English";
 }
 
 function updateModeTitle() {
@@ -127,10 +174,12 @@ function showSection(sectionId, element) {
     });
     document.getElementById(sectionId).style.display = 'block';
 
-    document.querySelectorAll('.tab-button').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    element.classList.add('active');
+    if(element) {
+        document.querySelectorAll('.tab-button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        element.classList.add('active');
+    }
 }
 
 
@@ -141,10 +190,10 @@ if(searchInput) {
 window.onload = () => {
     const userLang = navigator.language || navigator.userLanguage;
     setLanguage(userLang.startsWith('en') ? 'en' : 'ko');
-    
-    // Set initial active tab
-    showSection('lotto-picker-section', document.querySelector('.tab-button[data-lang-key="lottoPickerTab"]'));
-    changeTab('number', document.querySelector('.nav-btns button'));
+    showSection('lotto-picker-section');
+    if (document.querySelector('.nav-btns button')) {
+        changeTab('number', document.querySelector('.nav-btns button'));
+    }
 };
 
 function changeTab(mode, btn) {
@@ -161,11 +210,11 @@ function changeTab(mode, btn) {
         case 'dream':
             keywords = jobs;
             break;
-        case 'actor':
-            keywords = actors;
+        case 'fruit':
+            keywords = fruits;
             break;
-        case 'flag':
-            keywords = countries;
+        case 'slot':
+            keywords = slotSymbols;
             break;
         case 'animal':
             keywords = animals;
@@ -177,49 +226,110 @@ function changeTab(mode, btn) {
 }
 
 function handleSearch() {
-    const val = searchInput.value.trim();
+    const val = searchInput.value.trim().toLowerCase();
     if (!val) return;
-    currentMode = 'search';
-    const lang = isEnglish ? 'en' : 'ko';
-    modeTitle.innerText = langData[lang].randMsg;
-    render(val);
+
+    if (currentMode === 'fruit') {
+        const results = fruits.filter(item => item.name.toLowerCase().includes(val));
+        if (results.length > 0) {
+            render(results);
+        } else {
+            gridDiv.innerHTML = '<p>No results found</p>';
+        }
+    } else {
+        currentMode = 'search';
+        const lang = isEnglish ? 'en' : 'ko';
+        modeTitle.innerText = langData[lang].randMsg;
+        render(val);
+    }
 }
 
-function render(keywords) {
+async function render(keywords) {
     if (!gridDiv) return;
     gridDiv.innerHTML = '';
-    for (let i = 1; i <= 45; i++) {
-        const box = document.createElement('div');
-        box.className = 'item';
-        box.onclick = () => (currentMode === 'number') ? addNum(i) : pickRandom();
 
-        if (currentMode === 'number') {
+    if (currentMode === 'number') {
+        for (let i = 1; i <= 45; i++) {
+            const box = document.createElement('div');
+            box.className = 'item';
             box.innerHTML = `<div class="num-label">${i}</div>`;
-        } else {
-            const img = document.createElement('img');
-            let finalTag = '';
-            if (Array.isArray(keywords)) {
-                finalTag = keywords[i-1];
-            } else {
-                finalTag = keywords;
+            box.onclick = () => addNum(i);
+            gridDiv.appendChild(box);
+        }
+    } else if (currentMode === 'fruit') {
+        let usePixabay = true;
+        if (PIXABAY_API_KEY === 'YOUR_PIXABAY_API_KEY') {
+            if (!localStorage.getItem('pixabayApiKeyWarned')) {
+                alert('Please replace "YOUR_PIXABAY_API_KEY" in main.js with your actual Pixabay API key for dynamic fruit images. Falling back to default images.');
+                localStorage.setItem('pixabayApiKeyWarned', 'true');
             }
+            usePixabay = false;
+        }
 
-            if (currentMode === 'actor') {
-                img.src = `https://loremflickr.com/200/200/${finalTag},portrait?lock=${i}`;
-            } else {
-                img.src = `https://source.unsplash.com/200x200/?${finalTag}`;
+        for (let i = 0; i < keywords.length; i++) {
+            const box = document.createElement('div');
+            box.className = 'item';
+            
+            const fruit = keywords[i];
+            const finalTag = fruit.name;
+
+            box.onclick = () => {
+                pickRandom();
+            };
+
+            const img = document.createElement('img');
+            let imageUrlToUse = `https://loremflickr.com/200/200/${finalTag}?lock=${i}`;
+
+            if (usePixabay) {
+                try {
+                    const response = await fetch(`https://pixabay.com/api/?key=${PIXABAY_API_KEY}&q=${encodeURIComponent(finalTag)}&image_type=photo&per_page=3`);
+                    const data = await response.json();
+                    if (data.hits.length > 0) {
+                        imageUrlToUse = data.hits[0].webformatURL;
+                    } else {
+                        console.warn(`No Pixabay images found for "${finalTag}". Using fallback.`);
+                    }
+                } catch (error) {
+                    console.error('Error fetching from Pixabay:', error);
+                }
             }
+            img.src = imageUrlToUse;
             
             img.onerror = () => { 
-                if (currentMode === 'actor') {
-                    img.src = `https://source.unsplash.com/200x200/?${finalTag},face`;
-                } else {
-                    img.src = `https://loremflickr.com/200/200/${finalTag}?lock=${i}`; 
-                }
+                img.src = `https://loremflickr.com/200/200/${finalTag}?lock=${i}`; 
             };
             box.appendChild(img);
+            gridDiv.appendChild(box);
         }
-        gridDiv.appendChild(box);
+    } else if (currentMode === 'slot') {
+        for (let i = 0; i < keywords.length; i++) {
+            const box = document.createElement('div');
+            box.className = 'item';
+            box.innerHTML = `<div class="num-label" style="font-size: 50px;">${keywords[i]}</div>`;
+            box.onclick = () => pickRandom();
+            gridDiv.appendChild(box);
+        }
+    }
+    else {
+        for (let i = 0; i < keywords.length; i++) {
+            const box = document.createElement('div');
+            box.className = 'item';
+            
+            const finalTag = keywords[i];
+
+            box.onclick = () => {
+                pickRandom();
+            };
+
+            const img = document.createElement('img');
+            img.src = `https://source.unsplash.com/200x200/?${finalTag}`;
+            
+            img.onerror = () => { 
+                img.src = `https://loremflickr.com/200/200/${finalTag}?lock=${i}`; 
+            };
+            box.appendChild(img);
+            gridDiv.appendChild(box);
+        }
     }
 }
 
@@ -252,9 +362,6 @@ function resetAll() {
     picked = [];
     if(ballDiv) ballDiv.innerHTML = '';
 }
-
-const URL = "https://teachablemachine.withgoogle.com/models/D4JCk5RcS/";
-let model, webcam, labelContainer, maxPredictions;
 
 async function init() {
     try {
@@ -294,4 +401,95 @@ async function predict() {
             labelContainer.childNodes[i].innerHTML = classPrediction;
         }
     }
+}
+
+// --- President Test Functions ---
+
+async function startPresidentTest() {
+    showSection('president-test-section');
+    const modelURL = presidentModelURL + "model.json";
+    const metadataURL = presidentModelURL + "metadata.json";
+    try {
+        presidentModel = await tmImage.load(modelURL, metadataURL);
+        const flip = true;
+        presidentWebcam = new tmImage.Webcam(200, 200, flip);
+        await presidentWebcam.setup(); 
+        await presidentWebcam.play();
+        const webcamContainer = document.getElementById("president-webcam-container");
+        webcamContainer.innerHTML = '';
+        webcamContainer.appendChild(presidentWebcam.canvas);
+    } catch(e) {
+        console.error(e);
+        alert("Could not load president model. Please provide a valid model URL.");
+    }
+}
+
+async function predictPresident() {
+    if (!presidentModel) {
+        alert("Please start the test first.");
+        return;
+    }
+    const canvas = document.getElementById('user-face-canvas');
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(presidentWebcam.canvas, 0, 0, 200, 200);
+
+    const prediction = await presidentModel.predict(presidentWebcam.canvas);
+    prediction.sort((a, b) => b.probability - a.probability);
+
+    const president = presidents.find(p => p.name === prediction[0].className);
+    
+    if (president) {
+        const lottoNumbers = generateLottoNumbers(prediction);
+        const powerballNumbers = generateLottoNumbers(prediction, true);
+        const quote = quotes[Math.floor(Math.random() * quotes.length)];
+        
+        displayPresidentResult(president, lottoNumbers, powerballNumbers, quote);
+    } else {
+        alert("Could not recognize a president in the image.");
+    }
+}
+
+function generateLottoNumbers(prediction, isPowerball = false) {
+    const numbers = new Set();
+    const maxNum = isPowerball ? 69 : 45;
+    const count = isPowerball ? 5 : 6;
+
+    while (numbers.size < count) {
+        const seed = prediction.reduce((acc, p) => acc + p.probability, 0) + Math.random();
+        const num = Math.floor(seed * maxNum) + 1;
+        if (!numbers.has(num)) {
+            numbers.add(num);
+        }
+    }
+
+    const finalNumbers = Array.from(numbers).sort((a, b) => a - b);
+    if (isPowerball) {
+        finalNumbers.push(Math.floor(Math.random() * 26) + 1);
+    }
+    return finalNumbers;
+}
+
+function displayPresidentResult(president, lottoNumbers, powerballNumbers, quote) {
+    document.getElementById('president-image').src = president.imageUrl;
+    
+    const lottoDiv = document.getElementById('lotto-numbers');
+    lottoDiv.innerHTML = '';
+    lottoNumbers.forEach(n => {
+        const ball = document.createElement('div');
+        ball.className = 'ball';
+        ball.innerText = n;
+        lottoDiv.appendChild(ball);
+    });
+
+    const powerballDiv = document.getElementById('powerball-numbers');
+    powerballDiv.innerHTML = '';
+    powerballNumbers.forEach(n => {
+        const ball = document.createElement('div');
+        ball.className = 'ball';
+        ball.innerText = n;
+        powerballDiv.appendChild(ball);
+    });
+
+    document.getElementById('inspirational-quote').innerText = quote;
+    document.getElementById('president-result-container').style.display = 'block';
 }

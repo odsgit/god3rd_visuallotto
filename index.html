@@ -2,121 +2,155 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Global Visual Lotto Picker (1-45)</title>
+    <title>Visual Lotto/Powerball Picker</title>
     <meta name="google-adsense-account" content="ca-pub-3385745246239215">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <div class="top-bar">
-            <button class="util-btn" onclick="toggleDarkMode()" id="modeBtn">🌙 Dark Mode</button>
-            <button class="util-btn" onclick="toggleLanguage()" id="langBtn">🇺🇸 English</button>
-        </div>
-        <div class="main-nav-btns">
-            <button class="tab-button active" onclick="showSection('lotto-picker-section', this)" data-lang-key="lottoPickerTab">Lotto Picker</button>
-            <button class="tab-button" onclick="showSection('animal-face-test-section', this)" data-lang-key="animalTestTab">Animal Face Test</button>
-            <button class="tab-button" onclick="showSection('contact-section', this)" data-lang-key="contactTab">Contact Us</button>
-            <button class="tab-button" onclick="showSection('lotto-info-section', this)" data-lang-key="lottoInfoTab">Lotto Info</button>
-            <button class="tab-button" onclick="showSection('about-section', this)" data-lang-key="aboutTab">About Us</button>
-            <button class="tab-button" onclick="showSection('privacy-section', this)" data-lang-key="privacyTab">Privacy Policy</button>
-        </div>
-    </header>
-
-    <main>
-        <section id="lotto-picker-section" class="tab-content active">
-            <div class="controls">
-                <h2 id="mainTitle" data-lang-key="title">🍀 Visual Lotto Picker (1-45)</h2>
-                <div class="nav-btns">
-                    <button onclick="changeTab('number', this)" class="active" data-lang-key="numberTab">Number</button>
-                    <button onclick="changeTab('dream', this)" data-lang-key="dreamTab">Dream (Career)</button>
-                    <button onclick="changeTab('actor', this)" data-lang-key="actorTab">Actors</button>
-                    <button onclick="changeTab('flag', this)" data-lang-key="flagTab">Flags</button>
-                    <button onclick="changeTab('animal', this)" data-lang-key="animalTab">Animals</button>
-                </div>
-                <div class="search-group">
-                    <input type="text" id="customInput" data-lang-key="placeholder" placeholder="Enter keyword (Enter)">
-                    <button onclick="handleSearch()" id="searchBtn" data-lang-key="search" style="background:#34c759; color:white; border:none; border-radius:10px; padding:0 20px; cursor:pointer; font-weight:bold;">Search</button>
-                </div>
+    <div class="main-content">
+        <header>
+            <div class="top-bar">
+                <button class="util-btn" onclick="toggleDarkMode()" id="modeBtn">🌙 Dark</button>
+                <button class="util-btn" onclick="showSection('lotto-picker-section', this)">🏠 Home</button>
+                <button class="util-btn" onclick="showSection('lotto-info-section', this)" data-lang-key="lottoInfoTab">Lotto Info</button>
+                <button class="util-btn" onclick="toggleLanguage()" id="langBtn">🇺🇸</button>
             </div>
-            <div id="grid" class="grid"></div>
-            <div class="result-panel">
-                <h3 id="modeTitle" data-lang-key="numMsg">Click a number to pick!</h3>
-                <div id="selectedBalls" class="balls"></div>
-                <button class="reset-btn" onclick="resetAll()" id="resetBtn" data-lang-key="reset">Reset</button>
-            </div>
-        </section>
+        </header>
 
-        <section id="animal-face-test-section" class="tab-content" style="display: none;">
-            <div class="content-section">
-                <h2 data-lang-key="animalTestTitle">Animal Face Test</h2>
-                <button type="button" onclick="init()" data-lang-key="startBtn">Start</button>
-                <div id="webcam-container"></div>
-                <div id="label-container"></div>
-            </div>
-        </section>
-
-        <section id="contact-section" class="tab-content" style="display: none;">
-            <div class="contact-form-container">
-                <h3 data-lang-key="contactTitle">Contact Us</h3>
-                <form action="https://formspree.io/f/xaqqyrbn" method="POST" class="contact-form">
-                    <div class="form-group">
-                        <label for="name" data-lang-key="nameLabel">Name:</label>
-                        <input type="text" id="name" name="name" required>
+        <main>
+            <section id="lotto-picker-section" class="tab-content active">
+                <div class="controls">
+                    <h2 id="mainTitle" data-lang-key="title">🍀 Visual Lotto/Powerball Picker</h2>
+                    <div class="nav-btns">
+                        <button onclick="changeTab('number', this)" class="active" data-lang-key="numberTab">Number</button>
+                        <button onclick="changeTab('dream', this)" data-lang-key="dreamTab">Dream (Career)</button>
+                        <button onclick="changeTab('fruit', this)" data-lang-key="fruitTab">Fruits</button>
+                        <button onclick="changeTab('slot', this)" data-lang-key="slotTab">Slot Machine</button>
+                        <button onclick="changeTab('animal', this)" data-lang-key="animalTab">Animals</button>
                     </div>
-                    <div class="form-group">
-                        <label for="email" data-lang-key="emailLabel">Email:</label>
-                        <input type="email" id="email" name="_replyto" required>
+                    <div class="search-group">
+                        <input type="text" id="customInput" data-lang-key="placeholder" placeholder="Enter keyword (Enter)">
+                        <button onclick="handleSearch()" id="searchBtn" data-lang-key="search" style="background:#34c759; color:white; border:none; border-radius:10px; padding:0 20px; cursor:pointer; font-weight:bold;">Search</button>
                     </div>
-                    <div class="form-group">
-                        <label for="message" data-lang-key="messageLabel">Message:</label>
-                        <textarea id="message" name="message" rows="5" required></textarea>
+                    <button onclick="startPresidentTest()" class="reset-btn" style="margin-top: 10px;">내가 왕이 될 상인가?</button>
+                </div>
+                <div id="grid" class="grid"></div>
+                <div class="result-panel">
+                    <h3 id="modeTitle" data-lang-key="numMsg">Click a number to pick!</h3>
+                    <div id="selectedBalls" class="balls"></div>
+                    <button class="reset-btn" onclick="resetAll()" id="resetBtn" data-lang-key="reset">Reset</button>
+                </div>
+            </section>
+
+            <section id="president-test-section" class="tab-content" style="display: none;">
+                <div class="content-section">
+                    <h2>내가 왕이 될 상인가?</h2>
+                    <div id="president-webcam-container"></div>
+                    <button type="button" onclick="predictPresident()">결과 보기</button>
+                    <div id="president-result-container" style="display: none;">
+                        <div class="result-images">
+                            <div>
+                                <h3>Your Face</h3>
+                                <canvas id="user-face-canvas" width="200" height="200"></canvas>
+                            </div>
+                            <div>
+                                <h3>President</h3>
+                                <img id="president-image" src="" alt="President Image" width="200" height="200">
+                            </div>
+                        </div>
+                        <div class="lotto-results">
+                            <h3>Lotto Numbers</h3>
+                            <div id="lotto-numbers" class="balls"></div>
+                            <h3>Powerball Numbers</h3>
+                            <div id="powerball-numbers" class="balls"></div>
+                        </div>
+                        <div class="quote-container">
+                            <h3>인생의 좋은 말</h3>
+                            <p id="inspirational-quote"></p>
+                        </div>
                     </div>
-                    <button type="submit" class="submit-btn" data-lang-key="submitBtn">Submit</button>
-                </form>
-            </div>
-        </section>
-
-        <section id="lotto-info-section" class="tab-content" style="display: none;">
-            <div class="content-section">
-                <h2 data-lang-key="lottoInfoTitle">Lotto Fun Facts & Tips</h2>
-                <div class="article">
-                    <h3 data-lang-key="lottoMathTitle">The Surprising Math Behind Lotto Numbers</h3>
-                    <p data-lang-key="lottoMathContent">Many people believe that lotto numbers are purely random...</p>
                 </div>
-                <div class="article">
-                    <h3 data-lang-key="lottoDreamsTitle">Can Your Dreams Really Predict Lotto Numbers?</h3>
-                    <p data-lang-key="lottoDreamsContent">Throughout history, people have looked for signs and symbols...</p>
+            </section>
+
+            <section id="animal-face-test-section" class="tab-content" style="display: none;">
+                <div class="content-section">
+                    <h2 data-lang-key="animalTestTitle">Animal Face Test</h2>
+                    <button type="button" onclick="init()" data-lang-key="startBtn">Start</button>
+                    <div id="webcam-container"></div>
+                    <div id="label-container"></div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section id="about-section" class="tab-content" style="display: none;">
-            <div class="content-section">
-                <h2 data-lang-key="aboutTitle">About Us</h2>
-                <p data-lang-key="aboutContent">Visual Lotto Picker is a fun and interactive way...</p>
-            </div>
-        </section>
+            <section id="lotto-info-section" class="tab-content" style="display: none;">
+                <div class="content-section">
+                    <h2 data-lang-key="lottoInfoTitle">Lotto Fun Facts & Tips</h2>
+                    <div class="article">
+                        <h3 data-lang-key="lottoMathTitle">The Surprising Math Behind Lotto Numbers</h3>
+                        <p data-lang-key="lottoMathContent">Many people believe that lotto numbers are purely random, but there are some interesting mathematical patterns that can be observed. While these patterns don't guarantee a win, they can make the number selection process more interesting. For example, some studies have shown that odd and even numbers tend to be drawn in a balanced way. This is just one of many fascinating aspects of the mathematics of chance.</p>
+                    </div>
+                    <div class="article">
+                        <h3 data-lang-key="lottoDreamsTitle">Can Your Dreams Really Predict Lotto Numbers?</h3>
+                        <p data-lang-key="lottoDreamsContent">Throughout history, people have looked for signs and symbols to guide their lottery picks. Dreams are a common source of inspiration. While there is no scientific evidence to support the idea that dreams can predict winning numbers, many players find it a fun and exciting way to choose their numbers. Our 'Dream' category is inspired by this long-standing tradition of finding personal meaning in the numbers you choose.</p>
+                    </div>
+                    <div class="article">
+                        <h3>Lottery Strategies for Better Odds</h3>
+                        <p>While no strategy guarantees a win in a game of chance, some methods can improve your odds. Consider joining a lottery pool to buy more tickets and increase your chances without spending more money. Also, choosing numbers above 31 can be a good strategy, as many people use birthdays, leading to more shared jackpots for lower numbers.</p>
+                    </div>
+                    <div class="article">
+                        <h3>Did You Know? Lottery Fun Facts</h3>
+                        <p>Americans spend more on lottery tickets than on movies, books, and video games combined. Interestingly, you are more likely to be killed by a vending machine than to win the lottery. The largest unclaimed lottery prize in the US was a staggering $77.1 million!</p>
+                    </div>
+                </div>
+            </section>
 
-        <section id="privacy-section" class="tab-content" style="display: none;">
-            <div class="content-section">
-                <h2 data-lang-key="privacyTitle">Privacy Policy</h2>
-                <p data-lang-key="privacyContent">Your privacy is important to us...</p>
-            </div>
-        </section>
-    </main>
-    
-    <footer>
-        <p>&copy; 2026 Visual Lotto Picker. All Rights Reserved.</p>
-        <p>
-            <a href="#" onclick="showSection('about-section', this); return false;" data-lang-key="aboutTab">About Us</a> | 
-            <a href="#" onclick="showSection('privacy-section', this); return false;" data-lang-key="privacyTab">Privacy Policy</a> | 
-            <a href="#" onclick="showSection('contact-section', this); return false;" data-lang-key="contactTab">Contact</a>
-        </p>
-    </footer>
+            <section id="about-section" class="tab-content" style="display: none;">
+                <div class="content-section">
+                    <h2 data-lang-key="aboutTitle">About Us</h2>
+                    <p data-lang-key="aboutContent">Visual Lotto Picker is a fun and interactive way...</p>
+                </div>
+            </section>
+
+            <section id="privacy-section" class="tab-content" style="display: none;">
+                <div class="content-section">
+                    <h2 data-lang-key="privacyTitle">Privacy Policy</h2>
+                    <p data-lang-key="privacyContent">Your privacy is important to us...</p>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <section id="contact-section" class="tab-content">
+                <div class="contact-form-container">
+                    <h3 data-lang-key="contactTitle">Contact Us</h3>
+                    <form action="https://formspree.io/f/xaqqyrbn" method="POST" class="contact-form">
+                        <div class="form-group">
+                            <label for="name" data-lang-key="nameLabel">Name:</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email" data-lang-key="emailLabel">Email:</label>
+                            <input type="email" id="email" name="_replyto" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message" data-lang-key="messageLabel">Message:</label>
+                            <textarea id="message" name="message" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="submit-btn" data-lang-key="submitBtn">Submit</button>
+                    </form>
+                </div>
+            </section>
+            <p>&copy; 2026 Visual Lotto Picker. All Rights Reserved.</p>
+            <p>
+                <a href="#" onclick="showSection('about-section', this); return false;" data-lang-key="aboutTab">About Us</a> | 
+                <a href="#" onclick="showSection('privacy-section', this); return false;" data-lang-key="privacyTab">Privacy Policy</a>
+            </p>
+        </footer>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3385745246239215" crossorigin="anonymous"></script>
     <script src="main.js"></script>
+
 </body>
 </html>
