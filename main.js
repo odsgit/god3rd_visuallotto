@@ -268,11 +268,11 @@ async function render(keywords) {
             usePixabay = false;
         }
 
-        for (let i = 0; i < keywords.length; i++) {
+        for (let i = 0; i < 45; i++) {
             const box = document.createElement('div');
             box.className = 'item';
             
-            const fruit = keywords[i];
+            const fruit = keywords[Math.floor(Math.random() * keywords.length)];
             const finalTag = fruit.name;
 
             box.onclick = () => {
@@ -304,10 +304,10 @@ async function render(keywords) {
             gridDiv.appendChild(box);
         }
     } else if (currentMode === 'slot') {
-        for (let i = 0; i < keywords.length; i++) {
+        for (let i = 0; i < 45; i++) {
             const box = document.createElement('div');
             box.className = 'item';
-            box.innerHTML = `<div class="num-label" style="font-size: 50px;">${keywords[i]}</div>`;
+            box.innerHTML = `<div class="num-label" style="font-size: 50px;">${keywords[i % keywords.length]}</div>`;
             box.onclick = () => pickRandom();
             gridDiv.appendChild(box);
         }
